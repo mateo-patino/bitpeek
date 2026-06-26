@@ -30,7 +30,7 @@ typedef struct {
 typedef uint64_t value_t;
 typedef struct {
     value_t value;
-    char base;
+    int base;
 } number_t;
 
 /* Operand data type */
