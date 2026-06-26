@@ -9,19 +9,29 @@
 #include "token.h"
 #include "lexer.h"
 
+/* 
+TODO: Usage and help function.
+*/
+void pcalc_help() {
+    /* TODO */
+    return;
+}
+
+
 int main(int argc, char** argv) {
-bool b_flag = false, o_flag = false, d_flag = false, h_flag = false, all_bases = true;    
+bool b_flag = false, o_flag = false, d_flag = false, x_flag = false, all_bases = true;    
     /*
     * To control the base of the output, use the following options:
     * -b: binary
     * -o: octal
     * -d: decimal
-    * -h: hexadecimal
+    * -x: hexadecimal
+    * -h: help
     */
 
     opterr = 0;
     char c = 0;
-    while ((c = getopt(argc, argv, "+bodh")) != -1) {
+    while ((c = getopt(argc, argv, "+bodxh")) != -1) {
         switch(c) {
             case 'b':
                 b_flag = true;
@@ -32,20 +42,23 @@ bool b_flag = false, o_flag = false, d_flag = false, h_flag = false, all_bases =
             case 'd':
                 d_flag = true;
                 break;
-            case 'h':
-                h_flag = true;
+            case 'x':
+                x_flag = true;
                 break;
+            case 'h':
+                pcalc_help();
+                return EXIT_SUCCESS;
             case '?':
                 fprintf(stderr, "Error: Unknown option '-%c' received.\n", optopt);
                 return EXIT_FAILURE;
         }
     }
 
-    if (b_flag + o_flag + d_flag + h_flag > 1) {
+    if (b_flag + o_flag + d_flag + x_flag > 1) {
         fprintf(stderr, "Error: too many options received.\n");
         return EXIT_FAILURE;
     }
-    else if (b_flag + o_flag + d_flag + h_flag == 1) {
+    else if (b_flag + o_flag + d_flag + x_flag == 1) {
         all_bases = false;
     }
 
