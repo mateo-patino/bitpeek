@@ -9,7 +9,8 @@ typedef enum {
     TOKENS_OK,
     TOKENS_UNKNOWN_ARG,
     TOKENS_ULL_OVERFLOW,
-    TOKENS_NULL_STR
+    TOKENS_NULL_STR,
+    TOKENS_MALLOC_FAILURE
 } tokens_status;
 
 
@@ -24,8 +25,10 @@ typedef enum {
 tokens_status create_tokens_from_argv(char **argv, token_t *addr, char **invalid);
 
 
-/* Creates a token_t object from a string 'str'. The token is written to 'addr'.
-* It returns TOKENS_OK upon success and 
+/* 
+* Creates a token_t object from a string 'str'. The token is written to 'addr'.
+* It returns TOKENS_OK upon success and the respective tokens_status code upon
+* error.
 */
 tokens_status create_token_from_str(const char *str, token_t *addr);
 
@@ -42,8 +45,8 @@ void print_token_error(tokens_status status);
 * large to fit in an unsigned 64-bit integer. 
 
 If 'base' is not NULL and the integer is valid, the base of the integer is stored in 
-'base'. If 'str' was invalid, 'base' is not modified.
+'base' and the value in 'val'. If 'str' was invalid, neither parameter is modified.
 */
-bool is_number(const char *str, int *base);
+bool is_number(const char *str, int *base, value_t *val);
 
 #endif
