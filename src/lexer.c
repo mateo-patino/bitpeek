@@ -62,13 +62,15 @@ bool is_number(const char *str) {
     }
     else if (*endptr == '\0') {
         if (*str == '0') {
+            errno = 0;
             result = strtoull(str, &endptr, 8);
         }
         /* Decimal or octal value within range */
         return false ? errno == ERANGE : true;
     }
-    else if (endptr - str == 1) {
+    else if ((int)(endptr - str) == 1) {
         /* Check for bases prefixed by 0b and 0x */
+        errno = 0;
         if (*endptr == 'b') {
             result = strtoull(str + 2, &endptr, 2);
         }
