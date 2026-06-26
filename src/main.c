@@ -7,10 +7,10 @@
 #include <getopt.h>
 
 #include "token.h"
+#include "lexer.h"
 
 int main(int argc, char** argv) {
-
-    bool b_flag = false, o_flag = false, d_flag = false, h_flag = false, all_bases = true;    
+bool b_flag = false, o_flag = false, d_flag = false, h_flag = false, all_bases = true;    
     /*
     * To control the base of the output, use the following options:
     * -b: binary
@@ -49,8 +49,24 @@ int main(int argc, char** argv) {
         all_bases = false;
     }
 
+    if (optind == argc) {
+        fprintf(stderr, "Error: invalid expression.\n");
+        return EXIT_FAILURE;
+    } 
+
     /* Produce array of tokens from argv */
     argv += optind;
+    token_t tokens[argc - optind];
+    char *invalid = NULL;
+    tokens_status tok_status = create_tokens_from_argv(argv, tokens, &invalid);
+
+    if (tok_status != TOKENS_OK) {
+        print_token_error(tok_status);
+        if (invalid) {
+            fprintf(stderr, "'%s'", invalid);
+        }
+        return EXIT_FAILURE;
+    }
 
     
     /*
