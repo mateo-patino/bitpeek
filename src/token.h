@@ -11,20 +11,43 @@ typedef enum {
   RPAREN
 } token_type;
 
-/* Supported operations */
-typedef enum {
-    ADD,
-    SUB,
-    MUL,
-    DIV
-} operation_type;
-
-
 /* Token struct; serves as a wrapper around number_t and operand_t */
 typedef struct {
     token_type type;
     void *obj;
 } token_t;
+
+
+/* Supported operations */
+typedef enum {
+    ADD,
+    SUB,
+    MUL,
+    DIV,
+    NUM_OP
+} operation_type;
+
+#define SYNONYMS_PER_OP 3
+const char* const operation_labels[NUM_OP][SYNONYMS_PER_OP] = {
+    [ADD] = {"add", "plus", "+"},
+    [SUB] = {"sub", "minus", "-"},
+    [MUL] = {"mul", "times", "x"},
+    [DIV] = {"div", "over", "/"}
+};
+
+/* Operand data type */
+typedef struct {
+    char arity;
+    char precedence;
+    operation_type op;
+} operand_t;
+
+/*
+* Constructor by type for operand_t objects. Returns a pointer a HEAP-allocated
+* operand_t and NULL if malloc fails.
+*/
+operand_t *init_operand(operation_type type);
+
 
 /* Number data type */
 typedef uint64_t value_t;
@@ -40,12 +63,6 @@ typedef struct {
 */
 number_t *init_number(value_t value, int base);
 
-/* Operand data type */
-typedef struct {
-    char arity;
-    char precedence;
-    operation_type op;
-} operand_t;
 
 #endif
 
