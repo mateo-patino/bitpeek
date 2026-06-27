@@ -1,13 +1,42 @@
 /*
 * Entry point for pcalc.
 */
+#include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <getopt.h>
+#include <string.h>
+#include <ctype.h>
+#include <assert.h>
 
 #include "token.h"
 #include "lexer.h"
+
+
+/*
+ * Returns the number of whitespace ' ' sequences in a string and -1 if the string is NULL.
+ * It skips all leading and trailing whitespace.
+ */
+int count_whitespaces(const char *str) {
+    if (!str) {
+        return -1;
+    }
+    int count = 0;
+    bool seen_word = false;
+    for (size_t i = 0, len = strlen(str); i < len; i++) {
+        if (isspace((unsigned char)str[i])) {
+            if (seen_word) {
+                count++;
+                seen_word = false;
+            }
+        }
+        else { seen_word = true; }
+    }
+
+    if (!seen_word && count > 1) { count--; }
+    return count;
+
+}
 
 /* 
 TODO: Usage and help function.
@@ -18,8 +47,10 @@ void pcalc_help() {
 }
 
 
+
 int main(int argc, char** argv) {
-bool b_flag = false, o_flag = false, d_flag = false, x_flag = false, all_bases = true;    
+
+    bool b_flag = false, o_flag = false, d_flag = false, x_flag = false, all_bases = true;    
     /*
     * To control the base of the output, use the following options:
     * -b: binary
@@ -62,16 +93,34 @@ bool b_flag = false, o_flag = false, d_flag = false, x_flag = false, all_bases =
         all_bases = false;
     }
 
+    size_t token_count = 0;
+    bool tokenize_argv;
     if (optind == argc) {
-        fprintf(stderr, "Error: invalid expression.\n");
+        fprintf(stderr, "Error: missing expression.\n");
         return EXIT_FAILURE;
-    } 
+    }
+    else if (argc - optind >= 2) {
+        token_count = argc - optind;
+        tokenize_argv = true;
+    }
+    /* One non-option argument remaining is interpreted as an expression enclosed by quotes */
+    else if (argc - optind == 1) {
+        token_count = count_whitespaces(argv[optind]) + 1;
+        tokenize_argv = false;
+    }
 
-    /* Produce array of tokens from argv */
-    argv += optind;
-    token_t tokens[argc - optind];
+    /* Produce array of tokens */
+    token_t tokens[token_count];
+    tokens_status tok_status;
     char *invalid = NULL;
-    tokens_status tok_status = create_tokens_from_argv(argv, tokens, &invalid);
+
+    if (tokenize_argv) {
+        argv += optind;
+        tok_status = create_tokens_from_argv(argv, tokens, &invalid);
+    }
+    else {
+        tok_status = create_tokens_from_string(argv[optind], tokens, &invalid);
+    }
 
     if (tok_status != TOKENS_OK) {
         print_token_error(tok_status);
