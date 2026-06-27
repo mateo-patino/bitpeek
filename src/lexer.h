@@ -49,4 +49,13 @@ If 'base' is not NULL and the integer is valid, the base of the integer is store
 */
 bool is_number(const char *str, int *base, value_t *val);
 
+
+/*
+* Returns true if 'str' is a valid operation. It compares 'str' to all the entries in 
+* operation_labels table.
+*
+* If 'type' is not NULL, the operation type is written to it.
+*/
+bool is_operation(const char *str, operation_type *type);
+
 #endif

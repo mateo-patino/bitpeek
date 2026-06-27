@@ -29,9 +29,9 @@ tokens_status create_token_from_str(const char *str, token_t *addr) {
 
     /* Check if 'str' is a valid number */
     int base;
-    if (is_number(str, &base)) {
-        value_t val = (value_t)strtoull(str, NULL, base);
-        number_t *number =  init_number(val, base);
+    value_t val;
+    if (is_number(str, &base, &val)) {
+        number_t *number = init_number(val, base);
         if (!number) {
             return TOKENS_MALLOC_FAILURE;
         }
@@ -41,14 +41,19 @@ tokens_status create_token_from_str(const char *str, token_t *addr) {
     }
     else {
         /* errno could also be EINVAL ('str' is not a number) but that doesn't mean the string 
-         * is invalid. The string could be a non-numeric token, hence we continue checking.
-         */
+         * is invalid. The string could be a non-numeric token, hence we continue checking. */
         if (errno == ERANGE) {
             return TOKENS_ULL_OVERFLOW;
         }
     }
 
-  /* TODO */
+    /* Check if 'str' is a valid operand */
+    operation_type type;
+    if (is_operation(str, &type)) {
+        /* CONTINUE HERE: implement and call init_operand to tokenize */
+    }
+    
+
     return TOKENS_OK;
 
 }
@@ -112,5 +117,18 @@ bool is_number(const char *str, int *base, value_t *val) {
         }
     }
     return false;
+}
+
+
+bool is_operation(const char *str, operation_type *type) {
+   for (int i = 0; i < NUM_OP; i++) {
+       for (int j = 0; j < SYNONYMS_PER_OP; j++) {
+           if (strcmp(str, operation_labels[i][j]) == 0) {
+               if (type) { *type = (operation_type)i; }
+               return true;
+           }
+       }
+   }
+   return false;
 }
 
