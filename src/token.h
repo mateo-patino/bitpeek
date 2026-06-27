@@ -35,6 +35,20 @@ const char* const operation_labels[NUM_OP][SYNONYMS_PER_OP] = {
     [DIV] = {"div", "over", "/"}
 };
 
+const char op_arity[NUM_OP] = {
+    [ADD] = 2,
+    [SUB] = 2,
+    [MUL] = 2,
+    [DIV] = 2
+};
+
+const char op_precedence[NUM_OP] = {
+    [ADD] = 0,
+    [SUB] = 0,
+    [MUL] = 1,
+    [DIV] = 1
+};
+
 /* Operand data type */
 typedef struct {
     char arity;
