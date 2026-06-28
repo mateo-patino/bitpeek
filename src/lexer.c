@@ -22,9 +22,17 @@ tokens_status create_tokens_from_argv(char **argv, token_t *addr, char **invalid
 
     while (*ptr != NULL) {
         status = create_token_from_str(*ptr, addr + i);
-        /* TODO */
-
+        if (status != TOKENS_OK) {
+            if (invalid) {
+                *invalid = *ptr;
+            }
+            return status;
+        }
+        i++;
+        ptr++;
     } 
+
+    return TOKENS_OK;
 }
 
 
@@ -80,8 +88,30 @@ tokens_status create_token_from_str(const char *str, token_t *addr) {
     }
     
     /* At this point, 'str' is neither a number, operand, or parenthesis */
-    return TOKENS_OK;
+    return TOKENS_INVALID_ARG;
+}
 
+
+void print_token_error(tokens_status status) {
+    switch (status) {
+        case TOKENS_OK:
+            fprintf(stdout, "Valid tokens.\n");
+            break;
+        case TOKENS_INVALID_ARG:
+            fprintf(stderr, "Invalid argument.\n");
+            break;
+        case TOKENS_ULL_OVERFLOW:
+            fprintf(stderr, "Number is too large.\n");
+            break;
+        case TOKENS_NULL_STR:
+            fprintf(stderr, "NULL string was unexpectedly passed.\n");
+            break;
+        case TOKENS_MALLOC_FAILURE:
+            fprintf(stderr, "malloc() failed.\n");
+            break;
+        default:
+            fprintf(stderr, "%i is not a registered status code.\n", status);
+    }
 }
 
 
