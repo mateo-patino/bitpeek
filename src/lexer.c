@@ -8,6 +8,12 @@
 #include <string.h>
 
 
+tokens_status create_tokens_from_string(const char *str, token_t *addr, char **invalid) {
+    /* TODO */
+    return NULL;
+}
+
+
 
 tokens_status create_tokens_from_argv(char **argv, token_t *addr, char **invalid) {
     char **ptr = argv;
@@ -37,6 +43,7 @@ tokens_status create_token_from_str(const char *str, token_t *addr) {
         }
         addr->type = NUMBER;
         addr->obj = number;
+
         return TOKENS_OK;
     }
     else {
@@ -50,10 +57,29 @@ tokens_status create_token_from_str(const char *str, token_t *addr) {
     /* Check if 'str' is a valid operand */
     operation_type type;
     if (is_operation(str, &type)) {
-        /* CONTINUE HERE: implement and call init_operand to tokenize */
+        operand_t *op = init_operand(type);
+        if (!op) {
+            return TOKENS_MALLOC_FAILURE;
+        }
+        addr->type = OPERAND;
+        addr->obj = op;
+
+        return TOKENS_OK;
     }
     
-
+    /* Check if 'str' is a parenthesis */
+    if (strcmp(str, "(") == 0) {
+        addr->type = LPAREN;
+        addr->obj = NULL;
+        return TOKENS_OK;
+    }
+    else if (strcmp(str, ")") == 0) {
+        addr->type = RPAREN;
+        addr->obj = NULL;
+        return TOKENS_OK;
+    }
+    
+    /* At this point, 'str' is neither a number, operand, or parenthesis */
     return TOKENS_OK;
 
 }

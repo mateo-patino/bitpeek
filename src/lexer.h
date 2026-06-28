@@ -7,7 +7,7 @@
 /* Tokenization status codes */
 typedef enum {
     TOKENS_OK,
-    TOKENS_UNKNOWN_ARG,
+    TOKENS_INVALID_ARG,
     TOKENS_ULL_OVERFLOW,
     TOKENS_NULL_STR,
     TOKENS_MALLOC_FAILURE
@@ -23,6 +23,17 @@ typedef enum {
 * to this argument.
 */
 tokens_status create_tokens_from_argv(char **argv, token_t *addr, char **invalid);
+
+
+/*
+* Produces an array of token_t structures from a string.
+* The first token_t object is written to 'addr' and 'TOKENS_OK' is returned upon success.
+*
+* If argv contains an invalid argument that cannot be tokenized, a value from 
+* 'tokens_status' describing the error is returned, and 'invalid' is modified to point
+* to this argument.
+*/
+tokens_status create_tokens_from_string(const char *str, token_t *addr, char **invalid);
 
 
 /* 
