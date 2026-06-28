@@ -8,9 +8,26 @@
 #include <string.h>
 
 
-tokens_status create_tokens_from_string(const char *str, token_t *addr, char **invalid) {
-    /* TODO */
-    return NULL;
+tokens_status create_tokens_from_string(char *str, token_t *addr, char **invalid) {
+   
+    tokens_status status;
+    size_t i = 0;
+    const char *sep = SPACE_CHARS;
+    char *tok = strtok(str, sep);
+
+    while (tok) {
+        status = create_token_from_str(tok, addr + i);
+        if (status != TOKENS_OK) {
+            if (invalid) {
+                *invalid = tok;
+            }
+            return status;
+        }
+        i++;
+        tok = strtok(NULL, sep);
+    }
+
+    return TOKENS_OK;
 }
 
 
@@ -20,7 +37,7 @@ tokens_status create_tokens_from_argv(char **argv, token_t *addr, char **invalid
     tokens_status status;
     size_t i = 0;
 
-    while (*ptr != NULL) {
+    while (*ptr) {
         status = create_token_from_str(*ptr, addr + i);
         if (status != TOKENS_OK) {
             if (invalid) {

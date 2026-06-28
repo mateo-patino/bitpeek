@@ -29,11 +29,15 @@ tokens_status create_tokens_from_argv(char **argv, token_t *addr, char **invalid
 * Produces an array of token_t structures from a string.
 * The first token_t object is written to 'addr' and 'TOKENS_OK' is returned upon success.
 *
-* If argv contains an invalid argument that cannot be tokenized, a value from 
+* If the string contains an invalid argument that cannot be tokenized, a value from 
 * 'tokens_status' describing the error is returned, and 'invalid' is modified to point
 * to this argument.
+*
+* Note that this function tokenizes the string using delimiters defined by the macro
+* SPACE_CHARS
 */
-tokens_status create_tokens_from_string(const char *str, token_t *addr, char **invalid);
+#define SPACE_CHARS " \t\n\v\f\r"
+tokens_status create_tokens_from_string(char *str, token_t *addr, char **invalid);
 
 
 /* 

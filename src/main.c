@@ -36,6 +36,12 @@ int count_whitespaces(const char *str) {
     if (!seen_word && count > 1) { count--; }
     return count;
 
+
+    if (!str) {
+        return -1;
+    }
+
+
 }
 
 /* 
@@ -119,7 +125,11 @@ int main(int argc, char** argv) {
         tok_status = create_tokens_from_argv(argv, tokens, &invalid);
     }
     else {
-        tok_status = create_tokens_from_string(argv[optind], tokens, &invalid);
+        size_t len = strlen(argv[optind]); 
+        char string[len + 1]; 
+        strncpy(string, argv[optind], len + 1);
+        string[len] = '\0';
+        tok_status = create_tokens_from_string(string, tokens, &invalid);
     }
 
     if (tok_status != TOKENS_OK) {
