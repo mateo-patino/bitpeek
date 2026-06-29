@@ -18,6 +18,13 @@ typedef struct {
 } token_t;
 
 
+/*
+* Frees the 'obj' memeber of a token_t but NOT the token_t itself.
+* Returns true if 'obj' was not NULL and was freed and false otherwise.
+*/
+bool free_token_obj(token_t *tok);
+
+
 /* Supported operations */
 typedef enum {
     ADD,

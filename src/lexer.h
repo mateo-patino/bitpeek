@@ -48,13 +48,6 @@ tokens_status create_tokens_from_string(char *str, token_t *addr, char **invalid
 tokens_status create_token_from_str(const char *str, token_t *addr);
 
 
-/*
-* Frees the 'obj' memeber of a token_t but NOT the token_t itself.
-* Returns true if 'obj' was not NULL and was freed and false otherwise.
-*/
-bool free_token_obj(token_t *tok);
-
-
 /* 
 * Prints an error message to stderr given a tokens_status code.
 */

@@ -42,6 +42,7 @@ tokens_status create_tokens_from_argv(char **argv, token_t *addr, char **invalid
             if (invalid) {
                 *invalid = *ptr;
             }
+
             /* Free previously allocated tokens */
             return status;
         }
@@ -106,19 +107,6 @@ tokens_status create_token_from_str(const char *str, token_t *addr) {
     
     /* At this point, 'str' is neither a number, operand, or parenthesis */
     return TOKENS_INVALID_ARG;
-}
-
-
-bool free_token_obj(token_t *tok) {
-    if (!tok) {
-        return false;
-    }
-    if (tok->obj) {
-        free(tok->obj);
-        tok->obj = NULL;
-        return true;
-    }
-    return false;
 }
 
 
