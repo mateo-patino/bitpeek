@@ -14,40 +14,35 @@
 
 
 /*
- * Returns the number of whitespace ' ' sequences in a string and -1 if the string is NULL.
- * It skips all leading and trailing whitespace.
+ * Returns the number of tokens in a string and -1 if the string is NULL.
+ * 
  */
-int count_whitespaces(const char *str) {
-    if (!str) {
+int count_tokens(const char *str) {
+    if (!str) { 
         return -1;
     }
-    int count = 0;
-    bool seen_word = false;
-    for (size_t i = 0, len = strlen(str); i < len; i++) {
-        if (isspace((unsigned char)str[i])) {
-            if (seen_word) {
-                count++;
-                seen_word = false;
-            }
-        }
-        else { seen_word = true; }
+    size_t len = strlen(str);
+    char s[len + 1];
+    strncpy(s, str, len + 1);
+    s[len] = '\0';
+
+    const char *sep = SPACE_CHARS;
+    char *tok = strtok(s, sep);
+    if (!tok) {
+        return 0;
     }
 
-    if (!seen_word && count > 1) { count--; }
-    return count;
-
-
-    if (!str) {
-        return -1;
+    int tok_count = 1;
+    while ((tok = strtok(NULL, sep)) != NULL) {
+        tok_count++;
     }
-
-
+    return tok_count;
 }
 
 /* 
 TODO: Usage and help function.
 */
-void pcalc_help() {
+void pcalc_help(void) {
     /* TODO */
     return;
 }
@@ -111,7 +106,7 @@ int main(int argc, char** argv) {
     }
     /* One non-option argument remaining is interpreted as an expression enclosed by quotes */
     else if (argc - optind == 1) {
-        token_count = count_whitespaces(argv[optind]) + 1;
+        token_count = count_tokens(argv[optind]);
         tokenize_argv = false;
     }
 
@@ -140,6 +135,7 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
+    /* Step 1) complete! Token array ready! */ 
     
     /*
     * TODO:
