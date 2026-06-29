@@ -1,0 +1,25 @@
+CC = gcc
+CFLAGS = -Wall -Wextra -Werror -pedantic-errors -g
+TARGET = pcalc
+SRC_DIR = src
+OBJ_DIR = build
+
+SRCS = $(wildcard $(SRC_DIR)/*.c)
+OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+
+all: $(TARGET)
+.PHONY: all clean
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	mkdir -p $(OBJ_DIR)
+	# The -MMD and -MP flags create a .d file with the dependencies of build/%.o
+	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
+
+clean:
+	rm -rf $(OBJ_DIR) $(TARGET)
+
+# This opens the .d file and the rules are merged with the one above.
+-include $(OBJS:.o=.d)
