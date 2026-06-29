@@ -20,7 +20,7 @@ tokens_status create_tokens_from_string(char *str, token_t *addr, char **invalid
             if (invalid) {
                 *invalid = tok;
             }
-            for (int t = 0; t < i; t++) {
+            for (size_t t = 0; t < i; t++) {
                 free_token_obj(addr + t);
             }
             return status;
@@ -45,7 +45,7 @@ tokens_status create_tokens_from_argv(char **argv, token_t *addr, char **invalid
             if (invalid) {
                 *invalid = *ptr;
             }
-            for (int t = 0; t < i; t++) {
+            for (size_t t = 0; t < i; t++) {
                 free_token_obj(addr + t);
             }
             return status;
