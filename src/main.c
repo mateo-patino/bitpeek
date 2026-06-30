@@ -15,7 +15,6 @@
 
 /*
  * Returns the number of tokens in a string and -1 if the string is NULL.
- * 
  */
 int count_tokens(const char *str) {
     if (!str) { 
@@ -51,7 +50,8 @@ void pcalc_help(void) {
 
 int main(int argc, char** argv) {
 
-    bool b_flag = false, o_flag = false, d_flag = false, x_flag = false, all_bases = true;    
+    bool b_flag = false, o_flag = false, d_flag = false, x_flag = false, all_bases = true; 
+    (void)all_bases; /* TO SILENCE WERROR. TODO: REMOVE */
     /*
     * To control the base of the output, use the following options:
     * -b: binary
@@ -95,14 +95,14 @@ int main(int argc, char** argv) {
     }
 
     size_t token_count = 0;
-    bool tokenize_argv;
+    bool tokenize_argv = true;
     if (optind == argc) {
         fprintf(stderr, "Error: missing expression.\n");
         return EXIT_FAILURE;
     }
     else if (argc - optind >= 2) {
         token_count = argc - optind;
-        tokenize_argv = true;
+        /* tokenize_argv remains true in this case */
     }
     /* One non-option argument remaining is interpreted as an expression enclosed by quotes */
     else if (argc - optind == 1) {
