@@ -20,7 +20,8 @@ typedef enum {
 * 
 * If argv contains an invalid argument that cannot be tokenized, a value from 
 * 'tokens_status' describing the error is returned, and 'invalid' is modified to point
-* to this argument.
+* to this argument. Previously heap-allocated token_t members are freed, and the token slot
+* where the invalid argument occurred is filled with a token_t of type INVALID_TOKEN.
 */
 tokens_status create_tokens_from_argv(char **argv, token_t *addr, char **invalid);
 
@@ -31,7 +32,8 @@ tokens_status create_tokens_from_argv(char **argv, token_t *addr, char **invalid
 *
 * If the string contains an invalid argument that cannot be tokenized, a value from 
 * 'tokens_status' describing the error is returned, and 'invalid' is modified to point
-* to this argument.
+* to this argument. Previously heap-allocated token_t members are freed, and the token slot
+* where the invalid argument occurred is filled with a token_t of type INVALID_TOKEN.
 *
 * Note that this function tokenizes the string using delimiters defined by the macro
 * SPACE_CHARS
