@@ -115,8 +115,8 @@ int main(int argc, char** argv) {
     tokens_status tok_status;
     char *invalid = NULL;
 
-    /* Valid ONLY when tokenizing from string instead of argv. Declared here to extend 'string' 
-     * lifetime until print_token_error attempts to access 'invalid', which would point to 'string' */
+    /* Valid ONLY when tokenizing from string instead of argv. Declared here to extend 'string_buf' 
+     * lifetime until print_token_error attempts to access 'invalid', which would point to 'string_buf' */
     size_t string_len = strlen(argv[optind]); 
     char string_buf[string_len + 1]; 
 
@@ -132,6 +132,7 @@ int main(int argc, char** argv) {
 
     if (tok_status != TOKENS_OK) {
         print_token_error(tok_status, invalid);
+        free_tokens_invalid(tokens); 
         return EXIT_FAILURE;
     }
 
