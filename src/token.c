@@ -64,3 +64,18 @@ bool free_token_obj(token_t *tok) {
     }
     return false;
 }
+
+
+int free_tokens_invalid(token_t *tok) {
+    if (!tok) {
+        return 0;
+    }
+    int count = 0;
+    token_t *ptr = tok;
+    while (ptr->type != INVALID_TOKEN) {
+        free_token_obj(ptr);
+        count++;
+        ptr++;
+    }
+    return count;
+}

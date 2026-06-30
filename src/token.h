@@ -9,7 +9,8 @@ typedef enum {
   OPERAND,
   NUMBER,
   LPAREN,
-  RPAREN
+  RPAREN,
+  INVALID_TOKEN
 } token_type;
 
 /* Token struct; serves as a wrapper around number_t and operand_t */
@@ -20,10 +21,19 @@ typedef struct {
 
 
 /*
-* Frees the 'obj' memeber of a token_t but NOT the token_t itself.
+* Frees the 'obj' member of a token_t but NOT the token_t itself.
 * Returns true if 'obj' was not NULL and was freed and false otherwise.
 */
 bool free_token_obj(token_t *tok);
+
+
+/*
+* Calls free_token_obj on an array of token_t structs until finding the first
+* token_t with type = INVALID_TOKEN. 
+* 
+* It returns the number of tokens freed, excluding the INVALID_TOKEN.
+*/
+int free_tokens_invalid(token_t *tok);
 
 
 /* Supported operations */
