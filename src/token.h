@@ -2,6 +2,7 @@
 #define TOKEN_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 /* Token types */
 typedef enum {
@@ -35,26 +36,9 @@ typedef enum {
 } operation_type;
 
 #define SYNONYMS_PER_OP 3
-const char* const operation_labels[NUM_OP][SYNONYMS_PER_OP] = {
-    [ADD] = {"add", "plus", "+"},
-    [SUB] = {"sub", "minus", "-"},
-    [MUL] = {"mul", "times", "x"},
-    [DIV] = {"div", "over", "/"}
-};
-
-const char op_arity[NUM_OP] = {
-    [ADD] = 2,
-    [SUB] = 2,
-    [MUL] = 2,
-    [DIV] = 2
-};
-
-const char op_precedence[NUM_OP] = {
-    [ADD] = 0,
-    [SUB] = 0,
-    [MUL] = 1,
-    [DIV] = 1
-};
+extern const char* const operation_labels[NUM_OP][SYNONYMS_PER_OP];
+extern const char op_arity[NUM_OP];
+extern const char op_precedence[NUM_OP];
 
 /* Operand data type */
 typedef struct {

@@ -4,6 +4,30 @@
 #include <stdbool.h>
 
 
+const char* const operation_labels[NUM_OP][SYNONYMS_PER_OP] = {
+    [ADD] = {"add", "plus", "+"},
+    [SUB] = {"sub", "minus", "-"},
+    [MUL] = {"mul", "times", "x"},
+    [DIV] = {"div", "over", "/"}
+};
+
+
+const char op_arity[NUM_OP] = {
+    [ADD] = 2,
+    [SUB] = 2,
+    [MUL] = 2,
+    [DIV] = 2
+};
+
+
+const char op_precedence[NUM_OP] = {
+    [ADD] = 0,
+    [SUB] = 0,
+    [MUL] = 1,
+    [DIV] = 1
+};
+
+
 number_t *init_number(value_t value, int base) {
     number_t *obj = malloc(sizeof(number_t));
     if (!obj) {
@@ -14,6 +38,7 @@ number_t *init_number(value_t value, int base) {
     
     return obj;
 }
+
 
 operand_t *init_operand(operation_type type) {
     operand_t *op = malloc(sizeof(operand_t));
