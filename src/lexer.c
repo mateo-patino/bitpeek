@@ -114,22 +114,25 @@ tokens_status create_token_from_str(const char *str, token_t *addr) {
 }
 
 
-void print_token_error(tokens_status status) {
+void print_token_error(tokens_status status, const char *msg) {
+    if (!msg) {
+        msg = "";   
+    }
     switch (status) {
         case TOKENS_OK:
-            fprintf(stdout, "Valid tokens.\n");
+            fprintf(stdout, "Valid tokens. %s\n", msg);
             break;
         case TOKENS_INVALID_ARG:
-            fprintf(stderr, "Invalid argument.\n");
+            fprintf(stderr, "Invalid argument. %s\n", msg);
             break;
         case TOKENS_ULL_OVERFLOW:
-            fprintf(stderr, "Number is too large.\n");
+            fprintf(stderr, "Number is too large. %s\n", msg);
             break;
         case TOKENS_NULL_STR:
-            fprintf(stderr, "NULL string was unexpectedly passed.\n");
+            fprintf(stderr, "NULL string was unexpectedly passed. %s\n", msg);
             break;
         case TOKENS_MALLOC_FAILURE:
-            fprintf(stderr, "malloc() failed.\n");
+            fprintf(stderr, "malloc() failed. %s\n", msg);
             break;
         default:
             fprintf(stderr, "%i is not a registered status code.\n", status);

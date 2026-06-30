@@ -49,9 +49,9 @@ tokens_status create_token_from_str(const char *str, token_t *addr);
 
 
 /* 
-* Prints an error message to stderr given a tokens_status code.
+* Prints an error message to stderr given a tokens_status code. 
 */
-void print_token_error(tokens_status status);
+void print_token_error(tokens_status status, const char *msg);
 
 
 /*
