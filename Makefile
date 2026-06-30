@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -pedantic-errors -g
+CFLAGS = -std=c23 -Wall -Wextra -Werror -pedantic-errors -g
 TARGET = pcalc
 SRC_DIR = src
 OBJ_DIR = build
