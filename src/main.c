@@ -46,6 +46,19 @@ void pcalc_help(void) {
     return;
 }
 
+/* 
+* Prints 'n' token_t structs from an array. Used for debugging and development only.
+*/
+void show_token_array(const token_t *tok, int count) {
+    fprintf(stdout, "[");
+    for (int i = 0; i < count - 1; i++) {
+        print_token(tok + i, false);
+        fprintf(stdout, ", ");
+    }
+    print_token(tok + count - 1, false);
+    fprintf(stdout, "]\n");
+}
+
 
 
 int main(int argc, char** argv) {
@@ -148,5 +161,8 @@ int main(int argc, char** argv) {
     * 5) Output the result
     */
 
+    /* FOR TESTING */
+    show_token_array(tokens, token_count);
+    free_tokens_count(tokens, token_count);
     return EXIT_SUCCESS;
 }

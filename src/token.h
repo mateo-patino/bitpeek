@@ -36,6 +36,12 @@ bool free_token_obj(token_t *tok);
 int free_tokens_invalid(token_t *tok);
 
 
+/*
+* Calls free_token_obj on an array of 'count' token_t objects. 
+*/
+void free_tokens_count(token_t *tok, size_t count);
+
+
 /* 
 * Prints a token_t's information in a readable format to stdout.
 */
