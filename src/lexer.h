@@ -46,6 +46,9 @@ tokens_status create_tokens_from_string(char *str, token_t *addr, char **invalid
 * Creates a token_t object from a string 'str'. The token is written to 'addr'.
 * It returns TOKENS_OK upon success and the respective tokens_status code upon
 * error.
+*
+* Inside the function, 'str' is normalized to lowercase so that pcalc can accept
+* operands in upper and lowercase.
 */
 tokens_status create_token_from_str(const char *str, token_t *addr);
 

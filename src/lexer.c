@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 
 tokens_status create_tokens_from_string(char *str, token_t *addr, char **invalid) {
@@ -65,11 +66,16 @@ tokens_status create_token_from_str(const char *str, token_t *addr) {
     if (str == NULL || strlen(str) == 0) {
         return TOKENS_NULL_STR;
     }
+    size_t len = strlen(str);
+    char s[len + 1];
+    for (size_t i = 0; i <= len; i++) {
+        s[i] = tolower((unsigned char)str[i]);
+    }
 
     /* Check if 'str' is a valid number */
     int base;
     value_t val;
-    if (is_number(str, &base, &val)) {
+    if (is_number(s, &base, &val)) {
         number_t *number = init_number(val, base);
         if (!number) {
             return TOKENS_MALLOC_FAILURE;
@@ -89,7 +95,7 @@ tokens_status create_token_from_str(const char *str, token_t *addr) {
 
     /* Check if 'str' is a valid operand */
     operation_type type;
-    if (is_operation(str, &type)) {
+    if (is_operation(s, &type)) {
         operand_t *op = init_operand(type);
         if (!op) {
             return TOKENS_MALLOC_FAILURE;
@@ -101,12 +107,12 @@ tokens_status create_token_from_str(const char *str, token_t *addr) {
     }
     
     /* Check if 'str' is a parenthesis */
-    if (strcmp(str, "(") == 0) {
+    if (strcmp(s, "(") == 0) {
         addr->type = LPAREN;
         addr->obj = NULL;
         return TOKENS_OK;
     }
-    else if (strcmp(str, ")") == 0) {
+    else if (strcmp(s, ")") == 0) {
         addr->type = RPAREN;
         addr->obj = NULL;
         return TOKENS_OK;
