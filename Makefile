@@ -9,6 +9,7 @@ else
 endif
 
 CFLAGS = -std=$(CSTD) -Wall -Wextra -Werror -pedantic-errors -g
+CPPFLAGS = -Isrc
 TARGET = pcalc
 SRC_DIR = src
 OBJ_DIR = build
@@ -25,7 +26,7 @@ $(TARGET): $(OBJS)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	mkdir -p $(OBJ_DIR)
 	# The -MMD and -MP flags create a .d file with the dependencies of build/%.o
-	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -MMD -MP -c $< -o $@
 
 clean:
 	rm -rf $(OBJ_DIR) $(TARGET)
