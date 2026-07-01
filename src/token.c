@@ -82,6 +82,16 @@ int free_tokens_invalid(token_t *tok) {
 }
 
 
+void free_tokens_count(token_t *tok, size_t count) {
+    if (!tok) {
+        return;
+    }
+    for (size_t i = 0; i < count; i++) {
+        free_token_obj(tok + i);
+    }
+}
+
+
 void print_token(const token_t *tok, bool add_newline) {
     if (!tok) {
         return;
@@ -131,3 +141,4 @@ void print_token(const token_t *tok, bool add_newline) {
         fprintf(stdout, "\n");
     }
 }
+
