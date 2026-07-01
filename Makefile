@@ -1,5 +1,14 @@
+# Set C standard according to compiler version
 CC = gcc
-CFLAGS = -std=c23 -Wall -Wextra -Werror -pedantic-errors -g
+USE_C23 := $(shell echo "int main(void) { return 0; }" | $(CC) -std=c23 -x c - -o /dev/null 2>/dev/null; echo $$?)
+
+ifeq ($(USE_C23),0)
+	CSTD = c23
+else
+	CSTD = c2x
+endif
+
+CFLAGS = -std=$(CSTD) -Wall -Wextra -Werror -pedantic-errors -g
 TARGET = pcalc
 SRC_DIR = src
 OBJ_DIR = build
