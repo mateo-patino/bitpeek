@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
     */
 
     opterr = 0;
-    char c = 0;
+    int c = 0;
     while ((c = getopt(argc, argv, "+bodxh")) != -1) {
         switch(c) {
             case 'b':
