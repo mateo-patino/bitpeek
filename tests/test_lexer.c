@@ -32,3 +32,20 @@ bool test_valid_arithmetic_op_tokenizer(void) {
     return true;
 }
 
+bool test_invalid_arithmetic_op_tokenizer(void) {
+    ASSERT_TRUE(!is_operation("", NULL));
+    ASSERT_TRUE(!is_operation(" ", NULL));
+    ASSERT_TRUE(!is_operation("\n", NULL));
+    ASSERT_TRUE(!is_operation("\\", NULL));
+    ASSERT_TRUE(!is_operation("dog", NULL));
+    ASSERT_TRUE(!is_operation("0x10", NULL));
+    ASSERT_TRUE(!is_operation("+add", NULL));
+    ASSERT_TRUE(!is_operation("add+", NULL));
+    ASSERT_TRUE(!is_operation("addd", NULL));
+    ASSERT_TRUE(!is_operation("adds", NULL));
+    ASSERT_TRUE(!is_operation(NULL, NULL));
+
+    return true;
+}
+
+
