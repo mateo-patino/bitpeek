@@ -8,23 +8,27 @@
 
 bool test_valid_arithmetic_op_tokenizer(void) {
     operation_type op;
-    bool retval;
 
-    retval = is_operation("add", &op);
-    ASSERT_TRUE(retval);
+    ASSERT_TRUE(is_operation("add", &op));
+    ASSERT_TRUE(op == ADD);
+    ASSERT_TRUE(is_operation("plus", &op));
     ASSERT_TRUE(op == ADD);
 
-    retval = is_operation("sub", &op);
-    ASSERT_TRUE(retval);
+    ASSERT_TRUE(is_operation("sub", &op));
+    ASSERT_TRUE(op == SUB);
+    ASSERT_TRUE(is_operation("minus", &op));
     ASSERT_TRUE(op == SUB);
 
-    retval = is_operation("mul", &op);
-    ASSERT_TRUE(retval);
+    ASSERT_TRUE(is_operation("mul", &op));
     ASSERT_TRUE(op == MUL);
-
-    retval = is_operation("div", &op);
-    ASSERT_TRUE(retval);
+    ASSERT_TRUE(is_operation("times", &op));
+    ASSERT_TRUE(op == MUL);
+    
+    ASSERT_TRUE(is_operation("div", &op));
+    ASSERT_TRUE(op == DIV);
+    ASSERT_TRUE(is_operation("over", &op));
     ASSERT_TRUE(op == DIV);
 
     return true;
 }
+
