@@ -4,9 +4,10 @@
 * Calls all of the unit and integration tests for testing the lexer. 
 *
 * Returns the number of tests passed, and if 'total_ran' is not NULL, it writes the total
-* number of tests ran there.
+* number of tests ran there. If 'crashes' is not NULL, it writes the number of crashes 
+* (i.e tests terminated by a POSIX signal) there.
 */
-int run_lexer_tests(int *total_ran);
+int run_lexer_tests(int *total_ran, int *crashes);
 
 
 /*
