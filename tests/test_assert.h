@@ -24,7 +24,7 @@ void assert_true_failed(const char *file_name, int line, const char *func, const
 
 
 /*
-* Prints information about the test that failed an equals assertion.
+* Prints information about the test that failed an equals int assertion.
 */
 void assert_eq_int_failed(int exp, int rec, const char *file_name, int line, const char *func);
 
@@ -36,6 +36,22 @@ void assert_eq_int_failed(int exp, int rec, const char *file_name, int line, con
             return false; \
         } \
     } while (0)
+
+/*
+* Prints information about the test that failed an equals value_t assertion.
+*/
+void assert_eq_value_t_failed(const value_t *exp, const value_t *rec, const char *file_name, int line, const char *func);
+
+
+#define ASSERT_EQ_VALUE_T(exp, rec) \
+    do { \
+        value_t _exp = (value_t)(exp); \
+        value_t _rec = (value_t)(rec); \
+        if (_exp != _rec) { \
+            assert_eq_value_t_failed(&exp, &rec, __FILE__, __LINE__, __func__); \
+            return false; \
+        } \
+    } while (0) \
 
 /* 
 * Prints information about the test that failed.
