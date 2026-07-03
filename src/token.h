@@ -79,6 +79,7 @@ operand_t *init_operand(operation_type type);
 
 /* Number data type */
 typedef uint64_t value_t;
+#define VALUE_T_MAX UINT64_MAX
 typedef struct {
     value_t value;
     int base;
