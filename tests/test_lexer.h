@@ -34,3 +34,38 @@ bool test_valid_decimal_tokenizer(void);
 bool test_invalid_decimal_tokenizer(void);
 
 
+/*
+* tests tokenization of valid numbers in hexadecimal base.
+*/
+bool test_valid_hexadecimal_tokenizer(void);
+
+
+/*
+* tests tokenization of invalid numbers in hexadecimal base.
+*/
+bool test_invalid_hexadecimal_tokenizer(void);
+
+
+/*
+* tests tokenization of valid numbers in binary base.
+*/
+bool test_valid_binary_tokenizer(void);
+
+
+/*
+* tests tokenization of invalid numbers in binary base.
+*/
+bool test_invalid_binary_tokenizer(void);
+
+
+/*
+* tests tokenization of valid numbers in octal base.
+*/
+bool test_valid_octal_tokenizer(void);
+
+
+/*
+* tests tokenization of invalid numbers in octal base.
+*/
+bool test_invalid_octal_tokenizer(void);
+
