@@ -49,3 +49,34 @@ bool test_invalid_arithmetic_op_tokenizer(void) {
 }
 
 
+bool test_valid_decimal_tokenizer(void) {
+     int base;
+     value_t val;
+
+     ASSERT_TRUE(is_number("10", &base, &val));
+     ASSERT_EQ_INT(10, base);
+     ASSERT_EQ_VALUE_T((value_t)10, val);
+
+     ASSERT_TRUE(is_number("123456789", &base, &val));
+     ASSERT_EQ_INT(10, base);
+     ASSERT_EQ_VALUE_T((value_t)123456789, val);
+
+     ASSERT_TRUE(is_number("0", &base, &val));
+     ASSERT_EQ_INT(10, base);
+     ASSERT_EQ_VALUE_T((value_t)0, val);
+
+     ASSERT_TRUE(is_number("1", &base, &val));
+     ASSERT_EQ_INT(10, base);
+     ASSERT_EQ_VALUE_T((value_t)1, val);
+
+     ASSERT_TRUE(is_number("123456789", &base, &val));
+     ASSERT_EQ_INT(10, base);
+     ASSERT_EQ_VALUE_T((value_t)123456789, val);
+
+     ASSERT_TRUE(is_number("18446744073709551615", &base, &val));
+     ASSERT_EQ_INT(10, base);
+     ASSERT_EQ_VALUE_T((value_t)18446744073709551615ULL, val);
+ 
+     return true;
+}
+
