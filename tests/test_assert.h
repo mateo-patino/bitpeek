@@ -16,6 +16,7 @@ typedef struct {
 
 /* Colors */
 #define ANSI_RED "\x1b[31m"
+#define ANSI_GREEN "\x1b[32m"
 #define ANSI_RESET "\x1b[0m"
 #define BOLD "\x1b[1m"
 
