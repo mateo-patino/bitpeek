@@ -3,6 +3,17 @@
 
 #include "token.h"
 
+
+/* Structure of a test case */
+typedef bool (*test_func_t)(void);
+typedef struct {
+    const char *name;
+    test_func_t func;
+} test_case_t;
+
+/* Brace initialize a test */
+#define TEST(name) {#name, name}
+
 /* Colors */
 #define ANSI_RED "\x1b[31m"
 #define ANSI_RESET "\x1b[0m"
