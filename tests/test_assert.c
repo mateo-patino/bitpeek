@@ -32,7 +32,7 @@ void assert_eq_number_t_failed(const number_t *exp, const number_t *rec, const c
 
 void assert_eq_value_t_failed(value_t exp, value_t rec, const char *file_name, int line, const char *func) {
     fprintf(stderr, ANSI_RED BOLD "TEST FAILED" ANSI_RESET "\n");
-    fprintf(stderr, "Expected: %" PRIu64 " Received: " BOLD "%" PRIu64 ANSI_RESET "\n",  *exp, *rec);
+    fprintf(stderr, "Expected: %" PRIu64 " Received: " BOLD "%" PRIu64 ANSI_RESET "\n",  exp, rec);
     fprintf(stderr, "   at %s:%i\n", file_name, line);
     fprintf(stderr, "   in %s\n", func);
 }
