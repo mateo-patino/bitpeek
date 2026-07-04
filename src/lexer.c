@@ -164,7 +164,7 @@ void print_token_error(tokens_status status, const char *msg) {
 
 
 bool is_number(const char *str, int *base, value_t *val) {
-    if (!str || strlen(str) == 0) {
+    if (!str || strlen(str) == 0 || has_dash(str)) {
         return false;
     }
 
@@ -182,7 +182,7 @@ bool is_number(const char *str, int *base, value_t *val) {
         if (*str == '0') {
             errno = 0;
             result = strtoull(str, &endptr, 8);
-            if (errno == 0) {
+            if (errno == 0 && *endptr == '\0') {
                 if (base) { *base = 8; }
                 if (val) { *val = (value_t)result; }
                 return true;
