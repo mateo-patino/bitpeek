@@ -211,14 +211,17 @@ bool is_number(const char *str, int *base, value_t *val) {
 
 
 bool is_operation(const char *str, operation_type *type) {
-   for (int i = 0; i < NUM_OP; i++) {
+    if (!str) {
+        return false;
+    } 
+    for (int i = 0; i < NUM_OP; i++) {
        for (int j = 0; j < SYNONYMS_PER_OP; j++) {
            if (strcmp(str, operation_labels[i][j]) == 0) {
                if (type) { *type = (operation_type)i; }
                return true;
            }
        }
-   }
-   return false;
+    }
+    return false;
 }
 
