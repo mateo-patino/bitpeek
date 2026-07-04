@@ -223,6 +223,7 @@ bool test_invalid_hexadecimal_tokenizer(void) {
     ASSERT_TRUE(errno == ERANGE);
     ASSERT_TRUE(!is_number("-0xFFFFFFFFFFFFFFFE", NULL, NULL));
     ASSERT_TRUE(!is_number(NULL, NULL, NULL));
+    ASSERT_TRUE(!is_number("0xZZ", NULL, NULL));
 
     return true;
 }
@@ -277,6 +278,7 @@ bool test_invalid_binary_tokenizer(void) {
     ASSERT_TRUE(errno == ERANGE);
     ASSERT_TRUE(!is_number("-0b1111111111111111111111111111111111111111111111111111111111111110", NULL, NULL));
     ASSERT_TRUE(!is_number(NULL, NULL, NULL));
+    ASSERT_TRUE(!is_number("0b33", NULL, NULL));
 
     return true;
 }
