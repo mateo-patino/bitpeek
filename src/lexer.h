@@ -53,10 +53,43 @@ tokens_status create_tokens_from_string(char *str, token_t *addr, char **invalid
 tokens_status create_token_from_str(const char *str, token_t *addr);
 
 
+/* 
+* Determines the base a number in string format has. The allowed formats are:
+*
+* No prefix: decimal
+* Prefix "0b": binary
+* Prefix "0": octal
+* Prefix "0x": hexadecimal
+*
+* Ignoring all leading whitespace, if 'str' does not conform to one of the four allowed
+* prefixes above, the function returns -1. If 'str' has a valid prefix, the function
+* returns an integer representing the base of the number.
+*
+* This function GUARANTEES that the first two non-whitespace characters in 'str' comprise
+* a valid prefix. It does NOT check any characters beyond the first two, so non-numerical 
+* characters that make 'str' impossible to tokenize may exist.
+*/
+int get_base_from_str(const char *str);
+
+
+/* 
+* Calls strtoull on a string representing a number of base 'base'. If 'val' is not NULL, the 
+* value of the number is written there upon success.
+*
+* Returns true if the string is a valid number and false otherwise. 
+*
+* Note that the function does not check for prefixes. Hence, get_base_from_str should be
+* called before this function in most cases to obtain the prefix of the string and pass the
+* corresponding base into this function. 
+*/
+bool get_number_from_str(const char *str, const int base, value_t *val);
+
+
 /*
 * Returns true if 'str' contains an en-dash, em-dash, or hyphen.
 */
 bool has_dash(const char *str);
+
 
 /* 
 * Prints an error message to stderr given a tokens_status code. 
@@ -82,5 +115,6 @@ bool is_number(const char *str, int *base, value_t *val);
 * If 'type' is not NULL, the operation type is written to it.
 */
 bool is_operation(const char *str, operation_type *type);
+
 
 #endif

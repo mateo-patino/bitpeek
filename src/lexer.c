@@ -123,16 +123,73 @@ tokens_status create_token_from_str(const char *str, token_t *addr) {
 }
 
 
+int get_base_from_str(const char *str) {
+    if (!str || strlen(str) == 0) {
+        return -1;
+    }
+
+    /* Ignore leading whitespace */
+    while (isspace(*str)) { str++; }
+
+    /* Check if first digit is '0' */
+    if (*str == '0') {
+        /* Zero */
+        if (str[1] == '\0') {
+            return 10;
+        }
+        else if (str[1] == 'b') {
+            return 2;
+        }
+        else if (str[1] == 'x') {
+            return 16;
+        }
+        /* Octal: check second digit is valid octal digit */
+        else if (str[1] >= '0' && str[1] <= '7') {
+            return 8;
+        }
+        
+        return -1;
+    }
+    /* Check if first digit is [1, 9] */
+    else if (*str >= 49 && *str <= 57) {
+        return 10;
+    }
+    
+    return -1;
+}
+
+
+bool get_number_from_str(const char *str, const int base, value_t *val) {
+    if (!str || strlen(str) == 0) {
+        return false;
+    }
+    char *end;
+    errno = 0;
+    unsigned long long num = strtoull(str, &end, base);
+
+    /* Consume trailing whitespace */
+    while (isspace(*end)) { end++; }
+
+    if (*end == '\0' && errno == 0) {
+        if (val) { *val = (value_t)num; }
+        return true;
+        
+    }
+
+    return false;
+}
+
 bool has_dash(const char *str) {
     if (!str || strlen(str) == 0) {
         return false;
     }
     size_t len = strlen(str);
     for (size_t i = 0; i < len; i++) {
-        if (str[i] == '-' || strcmp(str, "–") == 0 || strcmp(str, "—") == 0) {
+        if (str[i] == '-') {
             return true;
         }
     }
+
     return false;
 }
 
@@ -168,60 +225,40 @@ bool is_number(const char *str, int *base, value_t *val) {
         return false;
     }
 
-    char *endptr = NULL;
-    unsigned long long result;
+    while (isspace(*str)) { str++; }
 
-    errno = 0;
-    result = strtoull(str, &endptr, 10);
-    if (endptr == str) {
-        /* All 3 non-decimal bases are prefixed by a 0*, so endptr != str in such cases */ 
+    int str_base;
+    if ((str_base = get_base_from_str(str)) == -1) {
         return false;
     }
-    else if (*endptr == '\0') {
-        /* A leading 0 signals an octal (not inferred by strtoull by default, which skips the leading zero) */
-        if (*str == '0') {
-            errno = 0;
-            result = strtoull(str, &endptr, 8);
-            if (errno == 0 && *endptr == '\0') {
-                if (base) { *base = 8; }
-                if (val) { *val = (value_t)result; }
-                return true;
-            }
-            return false;
-        }
-        /* Decimal */
-        if (errno == 0) {
-            if (base) { *base = 10; }
-            if (val) { *val = (value_t)result; }
-            return true;
-        }
-        return false;    
-    }
-    else if ((int)(endptr - str) == 1) {
-        /* Check for bases prefixed by 0b and 0x */
-        errno = 0;
-        if (*endptr == 'b') {
-            result = strtoull(str + 2, &endptr, 2);
 
-            if (errno == 0 && *endptr == '\0') {
-                if (base) { *base = 2; }
-                if (val) { *val = (value_t)result; }
-                return true;
-            }
+    /* Skip the prefix */
+    switch (str_base) {
+        case 2:
+            str += 2;
+            break;
+        case 8:
+            str++;
+            break;
+        case 10:
+            /* No prefix to skip for decimal */
+            break;
+        case 16:
+            str += 2;
+            break;
+        default:
+            /* Only the bases above are valid, so return failure otherwise */
             return false;
-        }
-        else if (*endptr == 'x') {
-            result = strtoull(str + 2, &endptr, 16);
-
-            if (errno == 0 && *endptr == '\0') {
-                if (base) { *base = 16; }
-                if (val) { *val = (value_t)result; }
-                return true;
-            }
-            return false;
-        }
     }
-    return false;
+
+    if (!get_number_from_str(str, str_base, val)) {
+        return false;
+    }
+
+    /* get_number_from_str writes the value to 'val' */
+    if (base) { *base = str_base; }
+
+    return true;
 }
 
 
