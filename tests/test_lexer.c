@@ -169,6 +169,8 @@ bool test_invalid_decimal_tokenizer(void) {
     ASSERT_TRUE(!is_number("string", NULL, NULL));
     ASSERT_TRUE(!is_number("", NULL, NULL));
     ASSERT_TRUE(!is_number("-123456789", NULL, NULL));
+    ASSERT_TRUE(!is_number("–123456789", NULL, NULL));
+    ASSERT_TRUE(!is_number("—123456789", NULL, NULL));
     ASSERT_TRUE(!is_number("18446744073709551616", NULL, NULL));
     ASSERT_TRUE(errno == ERANGE);
     ASSERT_TRUE(!is_number("-18446744073709551614", NULL, NULL));
@@ -219,6 +221,8 @@ bool test_invalid_hexadecimal_tokenizer(void) {
     ASSERT_TRUE(!is_number("string", NULL, NULL));
     ASSERT_TRUE(!is_number("", NULL, NULL));
     ASSERT_TRUE(!is_number("-0x75BCD15", NULL, NULL));
+    ASSERT_TRUE(!is_number("–0x75BCD15", NULL, NULL));
+    ASSERT_TRUE(!is_number("—0x75BCD15", NULL, NULL));
     ASSERT_TRUE(!is_number("0x10000000000000000", NULL, NULL));
     ASSERT_TRUE(errno == ERANGE);
     ASSERT_TRUE(!is_number("-0xFFFFFFFFFFFFFFFE", NULL, NULL));
@@ -274,6 +278,8 @@ bool test_invalid_binary_tokenizer(void) {
     ASSERT_TRUE(!is_number("string", NULL, NULL));
     ASSERT_TRUE(!is_number("", NULL, NULL));
     ASSERT_TRUE(!is_number("-0b111010110111100110100010101", NULL, NULL));
+    ASSERT_TRUE(!is_number("–0b111010110111100110100010101", NULL, NULL));
+    ASSERT_TRUE(!is_number("—0b111010110111100110100010101", NULL, NULL));
     ASSERT_TRUE(!is_number("0b10000000000000000000000000000000000000000000000000000000000000000", NULL, NULL));
     ASSERT_TRUE(errno == ERANGE);
     ASSERT_TRUE(!is_number("-0b1111111111111111111111111111111111111111111111111111111111111110", NULL, NULL));
@@ -331,6 +337,8 @@ bool test_invalid_octal_tokenizer(void) {
     ASSERT_TRUE(!is_number("02000000000000000000000", NULL, NULL));
     ASSERT_TRUE(errno == ERANGE);
     ASSERT_TRUE(!is_number("-01777777777777777777776", NULL, NULL));
+    ASSERT_TRUE(!is_number("–0726746425", NULL, NULL));
+    ASSERT_TRUE(!is_number("—0726746425", NULL, NULL));
     ASSERT_TRUE(!is_number(NULL, NULL, NULL));
     ASSERT_TRUE(!is_number("08", NULL, NULL));
     ASSERT_TRUE(!is_number("09", NULL, NULL));
