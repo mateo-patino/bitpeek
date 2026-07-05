@@ -58,10 +58,18 @@ typedef enum {
     NUM_OP
 } operation_type;
 
+
+typedef enum {
+    ASSOC_LEFT,
+    ASSOC_RIGHT
+} associativity;
+
+
 #define SYNONYMS_PER_OP 3
 extern const char* const operation_labels[NUM_OP][SYNONYMS_PER_OP];
 extern const char op_arity[NUM_OP];
 extern const char op_precedence[NUM_OP];
+extern const associativity op_associativity[NUM_OP];
 
 /* Operand data type */
 typedef struct {

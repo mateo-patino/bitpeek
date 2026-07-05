@@ -29,6 +29,14 @@ const char op_precedence[NUM_OP] = {
 };
 
 
+const associativity op_associativity[NUM_OP] = {
+    [ADD] = ASSOC_LEFT,
+    [SUB] = ASSOC_LEFT,
+    [MUL] = ASSOC_LEFT,
+    [DIV] = ASSOC_LEFT
+};
+
+
 number_t *init_number(value_t value, int base) {
     number_t *obj = malloc(sizeof(number_t));
     if (!obj) {
