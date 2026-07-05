@@ -63,7 +63,7 @@ tokens_status create_tokens_from_argv(char **argv, token_t *addr, char **invalid
 
 
 tokens_status create_token_from_str(const char *str, token_t *addr) {
-    if (str == NULL || strlen(str) == 0) {
+    if (str == NULL || *str == '\0') {
         return TOKENS_NULL_STR;
     }
     size_t len = strlen(str);
@@ -124,7 +124,7 @@ tokens_status create_token_from_str(const char *str, token_t *addr) {
 
 
 int get_base_from_str(const char *str) {
-    if (!str || strlen(str) == 0) {
+    if (!str || *str == '\0') {
         return -1;
     }
 
@@ -160,7 +160,7 @@ int get_base_from_str(const char *str) {
 
 
 bool get_number_from_str(const char *str, const int base, value_t *val) {
-    if (!str || strlen(str) == 0) {
+    if (!str || *str == '\0') {
         return false;
     }
     char *end;
@@ -180,7 +180,7 @@ bool get_number_from_str(const char *str, const int base, value_t *val) {
 }
 
 bool has_dash(const char *str) {
-    if (!str || strlen(str) == 0) {
+    if (!str || *str == '\0') {
         return false;
     }
     size_t len = strlen(str);
@@ -221,7 +221,7 @@ void print_token_error(tokens_status status, const char *msg) {
 
 
 bool is_number(const char *str, int *base, value_t *val) {
-    if (!str || strlen(str) == 0 || has_dash(str)) {
+    if (!str || *str == '\0' || has_dash(str)) {
         return false;
     }
 
@@ -263,7 +263,7 @@ bool is_number(const char *str, int *base, value_t *val) {
 
 
 bool is_operation(const char *str, operation_type *type) {
-    if (!str || strlen(str) == 0) {
+    if (!str || *str == '\0') {
         return false;
     } 
     for (int i = 0; i < NUM_OP; i++) {
