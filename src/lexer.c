@@ -93,14 +93,14 @@ tokens_status create_token_from_str(const char *str, token_t *addr) {
         }
     }
 
-    /* Check if 'str' is a valid operand */
+    /* Check if 'str' is a valid operator */
     operation_type type;
     if (is_operation(s, &type)) {
-        operand_t *op = init_operand(type);
+        operator_t *op = init_operator(type);
         if (!op) {
             return TOKENS_MALLOC_FAILURE;
         }
-        addr->type = OPERAND;
+        addr->type = OPERATOR;
         addr->obj = op;
 
         return TOKENS_OK;
@@ -118,7 +118,7 @@ tokens_status create_token_from_str(const char *str, token_t *addr) {
         return TOKENS_OK;
     }
     
-    /* At this point, 'str' is neither a number, operand, or parenthesis */
+    /* At this point, 'str' is neither a number, operator, or parenthesis */
     return TOKENS_INVALID_ARG;
 }
 
@@ -277,3 +277,11 @@ bool is_operation(const char *str, operation_type *type) {
     return false;
 }
 
+
+
+tokens_status validate_tokens_semantic(const token_t *tokens, size_t token_count) {
+    /* TODO */
+    (void)tokens;
+    (void)token_count;
+    return TOKENS_OK;
+}

@@ -49,8 +49,8 @@ number_t *init_number(value_t value, int base) {
 }
 
 
-operand_t *init_operand(operation_type type) {
-    operand_t *op = malloc(sizeof(operand_t));
+operator_t *init_operator(operation_type type) {
+    operator_t *op = malloc(sizeof(operator_t));
     if (!op) {
         return NULL;
     }
@@ -106,9 +106,9 @@ void print_token(const token_t *tok, bool add_newline) {
     }
 
     /* Operand print */
-    if (tok->type == OPERAND) {
-        operand_t *operand = (operand_t *)tok->obj;
-        operation_type op = operand->op;
+    if (tok->type == OPERATOR) {
+        operator_t *oper = (operator_t *)tok->obj;
+        operation_type op = oper->op;
         switch(op) {
             case ADD:
                 fprintf(stdout, "ADD");

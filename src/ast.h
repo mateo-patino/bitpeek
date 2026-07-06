@@ -43,16 +43,16 @@ typedef struct {
     char depth;
     char precedence;
     int index;
-} operand_tuple;
+} last_op_tuple;
 
 /*
-* Searches for the operand token that represents the last operation to be evaluated in
+* Searches for the operator token that represents the last operation to be evaluated in
 * the range [low, high] (inclusive).
 *
-* It returns the index of this operand token upon success and -1 if no operation token is found.
+* It returns the index of this operator token upon success and -1 if no token is found.
 *
-* It compares operands by recording 3 values about each one: depth, precedence, and index.
-* Every operand has a unique tuple of these 3 values.
+* It compares operators by recording 3 values about each one: depth, precedence, and index.
+* Every operator token has a unique tuple of these 3 values.
 */
 int find_last_operation(const token_t *tokens, int low, int high);
 

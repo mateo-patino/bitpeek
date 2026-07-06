@@ -7,14 +7,14 @@
 
 /* Token types */
 typedef enum {
-  OPERAND,
+  OPERATOR,
   NUMBER,
   LPAREN,
   RPAREN,
   INVALID_TOKEN
 } token_type;
 
-/* Token struct; serves as a wrapper around number_t and operand_t */
+/* Token struct; serves as a wrapper around number_t and operator_t */
 typedef struct {
     token_type type;
     void *obj;
@@ -71,18 +71,19 @@ extern const char op_arity[NUM_OP];
 extern const char op_precedence[NUM_OP];
 extern const associativity op_associativity[NUM_OP];
 
-/* Operand data type */
+/* Operator data type */
 typedef struct {
     char arity;
     char precedence;
     operation_type op;
-} operand_t;
+} operator_t;
+
 
 /*
-* Constructor by type for operand_t objects. Returns a pointer a HEAP-allocated
-* operand_t and NULL if malloc fails.
+* Constructor by type for operator objects. Returns a pointer a HEAP-allocated
+* operator_t and NULL if malloc fails.
 */
-operand_t *init_operand(operation_type type);
+operator_t *init_operator(operation_type type);
 
 
 /* Number data type */

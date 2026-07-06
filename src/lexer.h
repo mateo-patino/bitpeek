@@ -48,7 +48,7 @@ tokens_status create_tokens_from_string(char *str, token_t *addr, char **invalid
 * error.
 *
 * Inside the function, 'str' is normalized to lowercase so that pcalc can accept
-* operands in upper and lowercase.
+* operators in upper and lowercase.
 */
 tokens_status create_token_from_str(const char *str, token_t *addr);
 
@@ -116,5 +116,11 @@ bool is_number(const char *str, int *base, value_t *val);
 */
 bool is_operation(const char *str, operation_type *type);
 
+
+/*
+* Verifies that the 'tokens' array makes mathematical sense and can be transformed into
+* an abstract syntax tree by the AST module.
+*/
+tokens_status validate_tokens_semantic(const token_t *tokens, size_t token_count);
 
 #endif
