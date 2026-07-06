@@ -116,7 +116,7 @@ int find_last_operation(const token_t *tokens, int low, int high) {
 
 int find_only_number(const token_t *tokens, int low, int high) {
     if (!tokens) {
-        return NULL;
+        return -1;
     }
     int index = -1;
     for (int i = low; i <= high; i++) {
