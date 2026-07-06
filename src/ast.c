@@ -1,7 +1,10 @@
 #include "ast.h"
+#include "token.h"
 
 #include <stdlib.h>
+#include <limits.h>
 #include <stdio.h>
+
 
 
 ASTNode *init_ast_node(const token_t *tok, ASTNode *left, ASTNode *right) {
@@ -53,12 +56,62 @@ ASTNode *create_ast_helper(const token_t *tokens, int low, int high) {
 
 
 int find_last_operation(const token_t *tokens, int low, int high) {
-    (void)high;
-    (void)low;
-    (void)tokens;
-    return 1;
-}
+    if (!tokens) {
+        return -1;
+    }
+    token_type type;
+    operand_tuple last_op = { CHAR_MAX, CHAR_MAX, -1 };
+    char curr_depth = 0;
+    for (int i = low; i <= high; i++) {
+        type = tokens[i].type;
+        if (type == NUMBER) {
+            continue;
+        }
+        else if (type == LPAREN) {
+            curr_depth++;
+        }
+        else if (type == RPAREN) {
+            curr_depth--;
+        }
+        else if (type == OPERAND) {
+            operand_t *operand = tokens[i].obj;
 
+            /* Choose op with smallest depth if not tied */
+            if (curr_depth < last_op.depth) {
+                last_op.depth = curr_depth;
+                last_op.precedence = operand->precedence;
+                last_op.index = i;
+            }
+            else if (curr_depth == last_op.depth) {
+
+                /* Choose op with lowest precedence if depth is equal */
+                if (operand->precedence < last_op.precedence) {
+                    last_op.precedence = operand->precedence;
+                    last_op.index = i;
+                }
+                else if (operand->precedence == last_op.precedence) {
+                    /*
+                    * If same depth and precedence, choose the rightmost op if the operators
+                    * are left-associative and the leftmost op if they are right-associative. 
+                    * Note: Two operators with the same precedence MUST have equal associativity, 
+                    * so we can check the assoc of either 'operand' or 'last_op' 
+                    */
+                    if (op_associativity[operand->op] == ASSOC_LEFT) {
+                        if (i > last_op.index) {
+                            last_op.index = i;
+                        }
+                    }
+                    else if (op_associativity[operand->op] == ASSOC_RIGHT) {
+                        if (i < last_op.index) {
+                            last_op.index = i;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return last_op.index;
+}
 
 
 int find_only_number(const token_t *tokens, int low, int high) {

@@ -39,12 +39,20 @@ ASTNode *create_ast_from_tokens(const token_t *tokens, size_t tc);
 */
 ASTNode *create_ast_helper(const token_t *tokens, int low, int high);
 
+typedef struct {
+    char depth;
+    char precedence;
+    int index;
+} operand_tuple;
 
 /*
 * Searches for the operand token that represents the last operation to be evaluated in
 * the range [low, high] (inclusive).
 *
 * It returns the index of this operand token upon success and -1 if no operation token is found.
+*
+* It compares operands by recording 3 values about each one: depth, precedence, and index.
+* Every operand has a unique tuple of these 3 values.
 */
 int find_last_operation(const token_t *tokens, int low, int high);
 
