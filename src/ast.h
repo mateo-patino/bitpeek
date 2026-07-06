@@ -39,6 +39,20 @@ ASTNode *create_ast_from_tokens(const token_t *tokens, size_t tc);
 */
 ASTNode *create_ast_helper(const token_t *tokens, int low, int high);
 
+
+/* 
+* Traverses the AST recursively to evaluate it.
+* Returns the result of the evaluation as a value_t type.
+*/
+value_t evaluate_ast(const AST *ast);
+
+
+/* 
+* Recursively evaluates an AST.
+*/
+value_t evaluate_ast_helper(const ASTNode *root);
+
+
 typedef struct {
     char depth;
     char precedence;

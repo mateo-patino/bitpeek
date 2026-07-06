@@ -55,6 +55,40 @@ ASTNode *create_ast_helper(const token_t *tokens, int low, int high) {
 }
 
 
+value_t evaluate_ast(const AST *ast) {
+    return evaluate_ast_helper(ast->root);
+}
+
+
+value_t evaluate_ast_helper(const ASTNode *root) {
+    const token_t *tok = root->token;
+    if (root->token->type == NUMBER) {
+        number_t *num = (number_t *)tok->obj;
+        return num->value; 
+    }
+
+    value_t left = evaluate_ast_helper(root->left);
+    value_t right = evaluate_ast_helper(root->right);
+
+    operator_t *oper = (operator_t *)tok->obj;
+    operation_type op = oper->op;
+
+    switch (op) {
+        case ADD:
+            return left + right;
+        case SUB:
+            return left - right;
+        case MUL:
+            return left * right;
+        case DIV:
+            return left / right;
+        default:
+            fprintf(stderr, "Unknown operation!\n");
+            return 0;
+    }
+}
+
+
 int find_last_operation(const token_t *tokens, int low, int high) {
     if (!tokens) {
         return -1;
@@ -76,7 +110,7 @@ int find_last_operation(const token_t *tokens, int low, int high) {
         else if (type == OPERATOR) {
             operator_t *oper = tokens[i].obj;
 
-            /* Choose op with smallest depth if not tied */
+            /* Choose op with smallest depth */
             if (curr_depth < last_op.depth) {
                 last_op.depth = curr_depth;
                 last_op.precedence = oper->precedence;
