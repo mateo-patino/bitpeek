@@ -1,8 +1,72 @@
 /* Miscellaneous helpers used in unit and integration tests */
 #include <stdio.h>
 #include <inttypes.h>
+#include <errno.h>
+#include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
+
 #include "test_assert.h"
 #include "token.h"
+
+
+
+
+int run_forked_tests(const test_case_t *tests, size_t test_count, int *signaled) {
+   int pass = 0;
+   int crashes = 0;
+   pid_t test_pid;
+
+   for (size_t i = 0; i < test_count; i++) {
+
+        if ((test_pid = fork()) == -1) {
+            fprintf(stderr, "fork() failed. %s\n", strerror(errno));
+            exit(EXIT_FAILURE);
+        }
+        /* Child process running the test */
+        else if (test_pid == 0) {
+           if (tests[i].func()) {
+               _exit(EXIT_SUCCESS);
+           }
+           _exit(EXIT_FAILURE);
+        }
+        /* Runner process (parent) */
+        int status;
+        pid_t terminated_pid = waitpid(test_pid, &status, 0);
+        while (terminated_pid == -1 && errno == EINTR) {
+            terminated_pid = waitpid(test_pid, &status, 0);
+        }
+
+        if (terminated_pid == -1) {
+            fprintf(stderr, "waitpid() failed. %s\n", strerror(errno));
+            fprintf(stderr, "Could not read result of %s\n", tests[i].name);
+            continue;
+        }
+
+        /* Check for normal exit */
+        if (WIFEXITED(status)) {
+            int exit_code = WEXITSTATUS(status);
+            if (exit_code == EXIT_SUCCESS) {
+                fprintf(stdout, BOLD "%s " ANSI_RESET ANSI_GREEN "PASS" ANSI_RESET "\n", tests[i].name);
+                fflush(stdout);
+                pass++;
+            }
+            /* If the test fails, the assert statements call a function that handles the printing of the error message.
+            * No printing is needed here in the runner. */
+            continue;
+        }
+        /* Check for termination by a signal */
+        else if (WIFSIGNALED(status)) {
+            /* TODO: implement a printer for the signal number */
+            fprintf(stderr, BOLD "%s " ANSI_RED "CRASHED (signal %i)" ANSI_RESET "\n", tests[i].name, WTERMSIG(status)); 
+            signaled++;
+        }
+   }
+
+   if (signaled) { *signaled = crashes; }
+
+   return pass;
+}
 
 
 void assert_true_failed(const char *file_name, int line, const char *func, const char *expr) {

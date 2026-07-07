@@ -13,6 +13,17 @@ typedef struct {
     test_func_t func;
 } test_case_t;
 
+
+/*
+* Takes an array of 'test_count' test cases and runs each test case in an isolated process.
+* It calls fork() for each test case and counts how many test cases produce crashes, if any.
+*
+* If 'signaled' is not NULL, it writes the number of crashed test cases there. 
+*
+* Returns the number of successful tests.
+*/
+int run_forked_tests(const test_case_t *tests, size_t test_count, int *signaled);
+
 /* Brace initialize a test_case_t */
 #define TEST(name) {#name, name}
 
