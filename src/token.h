@@ -22,6 +22,11 @@ typedef struct {
 
 
 /*
+ * Returns the number of tokens in a string and -1 if the string is NULL.
+ */
+int count_tokens(const char *str);
+
+/*
 * Frees the 'obj' member of a token_t but NOT the token_t itself.
 * Returns true if 'obj' was not NULL and was freed and false otherwise.
 */

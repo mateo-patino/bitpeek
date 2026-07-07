@@ -1,9 +1,11 @@
 #include "token.h"
+#include "lexer.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <inttypes.h>
+#include <string.h>
 
 const char* const operation_labels[NUM_OP][SYNONYMS_PER_OP] = {
     [ADD] = {"add", "plus", "+"},
@@ -35,6 +37,29 @@ const associativity op_associativity[NUM_OP] = {
     [MUL] = ASSOC_LEFT,
     [DIV] = ASSOC_LEFT
 };
+
+
+int count_tokens(const char *str) {
+    if (!str) { 
+        return -1;
+    }
+    size_t len = strlen(str);
+    char s[len + 1];
+    strncpy(s, str, len + 1);
+    s[len] = '\0';
+
+    const char *sep = SPACE_CHARS;
+    char *tok = strtok(s, sep);
+    if (!tok) {
+        return 0;
+    }
+
+    int tok_count = 1;
+    while ((tok = strtok(NULL, sep)) != NULL) {
+        tok_count++;
+    }
+    return tok_count;
+}
 
 
 number_t *init_number(value_t value, int base) {
