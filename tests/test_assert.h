@@ -30,6 +30,7 @@ int run_forked_tests(const test_case_t *tests, size_t test_count, int *signaled)
 /* Colors */
 #define ANSI_RED "\x1b[31m"
 #define ANSI_GREEN "\x1b[32m"
+#define ANSI_BLUE "\x1b[94m"
 #define ANSI_RESET "\x1b[0m"
 #define BOLD "\x1b[1m"
 
