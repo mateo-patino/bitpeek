@@ -31,15 +31,15 @@ int main(void) {
     fprintf(stdout, BOLD LINE "AST TESTS" LINE ANSI_RESET "\n"); 
     fflush(stdout);
 
-    int total_eval = 0;
-    int crashes_eval = 0;
-    int pass_eval = run_ast_tests(&total_eval, &crashes_eval);
-    fprintf(stdout, BOLD "AST Results: %i total, %i pass, %i fail (%i crash)" ANSI_RESET "\n", total_eval, 
-            pass_eval, total_eval - pass_eval, crashes_eval);
+    int total_ast = 0;
+    int crashes_ast = 0;
+    int pass_ast = run_ast_tests(&total_ast, &crashes_ast);
+    fprintf(stdout, BOLD "AST Results: %i total, %i pass, %i fail (%i crash)" ANSI_RESET "\n", total_ast, 
+            pass_ast, total_ast - pass_ast, crashes_ast);
     fflush(stdout);
-    total_tests += total_eval;
-    total_crashes += crashes_eval;
-    total_pass += pass_eval;
+    total_tests += total_ast;
+    total_crashes += crashes_ast;
+    total_pass += pass_ast;
 
     fprintf(stdout, "\n");
     fprintf(stdout, BOLD LINE "SUMMARY" LINE ANSI_RESET "\n");
