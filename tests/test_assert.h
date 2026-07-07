@@ -3,6 +3,8 @@
 
 #include "token.h"
 
+#define ARRAY_LEN(a) (sizeof(a) / sizeof((a)[0]))
+
 
 /* Structure of a test case */
 typedef bool (*test_func_t)(void);
@@ -11,7 +13,7 @@ typedef struct {
     test_func_t func;
 } test_case_t;
 
-/* Brace initialize a test */
+/* Brace initialize a test_case_t */
 #define TEST(name) {#name, name}
 
 /* Colors */
