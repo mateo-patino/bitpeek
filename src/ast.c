@@ -165,6 +165,25 @@ int find_only_number(const token_t *tokens, int low, int high) {
 }
 
 
+void free_ast(AST *ast) {
+    if (!ast || !ast->root) {
+        return;
+    }
+    free_subtree(ast->root); 
+}
+
+
+void free_subtree(ASTNode *node) {
+    if (node == NULL) {
+        return;
+    }
+    free_subtree(node->left);
+    free_subtree(node->right);
+    free(node);
+}
+
+
+
 bool has_any_operations(const token_t *tokens, int low, int high) {
     if (!tokens) {
         return NULL;

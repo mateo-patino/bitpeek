@@ -81,6 +81,21 @@ int find_only_number(const token_t *tokens, int low, int high);
 
 
 /* 
+* Frees the ASTNode objects in an AST.
+*/
+void free_ast(AST *ast);
+
+
+/* 
+* Traverses the tree rooted at 'node' in a post-order fashion and calls free on each node.
+*
+* Note that only the memory allocated for the 3 pointers in the ASTNode struct is freed. The 
+* token_t object pointed at by the 'token' member is NOT freed.
+*/
+void free_subtree(ASTNode *node);
+
+
+/* 
 * Returns true if an array of tokens has at least one operation token in the range 
 * contaiing the indices [low, high].
 */
