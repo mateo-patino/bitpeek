@@ -35,7 +35,7 @@ bool test_invalid_decimal_tokenizer(void);
 
 
 /*
-* tests tokenization of valid numbers in hexadecimal base.
+ tests tokenization of valid numbers in hexadecimal base.
 */
 bool test_valid_hexadecimal_tokenizer(void);
 
