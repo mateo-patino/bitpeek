@@ -23,10 +23,19 @@ value_t _evaluate_expression(const char *expr);
 
 /*
 * Integration test: tests the tokenization, semantic validation, and AST building and evaluation
-* pipeline on simple algebraic expressions.
+* pipeline on algebraic expressions.
 *
 * See _evaluate_expression to see the pipeline tested.
 */
 bool test_evaluation_simple(void);
+bool test_evaluation_medium(void);
+bool test_evaluation_hard(void);
+bool test_evaluation_harder(void);
+
+
+/*
+* Test parenthesis handling
+*/
+bool test_evaluation_parens_madness(void);
 
 #endif
