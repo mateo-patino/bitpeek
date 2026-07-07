@@ -10,8 +10,6 @@
 #include "token.h"
 
 
-
-
 int run_forked_tests(const test_case_t *tests, size_t test_count, int *signaled) {
    int pass = 0;
    int crashes = 0;
