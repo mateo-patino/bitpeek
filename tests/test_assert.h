@@ -81,4 +81,15 @@ void assert_eq_number_t_failed(const number_t *exp, const number_t *rec, const c
         } \
     } while (0)
 
+
+void assert_expr_failed(const char *expr, value_t out, value_t result, const char *file_name, int line, const char *func);
+#define ASSERT_EXPR(expr, result) \
+    do { \
+        value_t out = _evaluate_expression(expr); \
+        if (out != result) { \
+            assert_expr_failed(expr, out, result, __FILE__, __LINE__, __func__); \
+            return false; \
+        } \
+    } while (0)
+
 #endif
