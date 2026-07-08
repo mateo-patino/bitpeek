@@ -69,3 +69,15 @@ bool test_valid_octal_tokenizer(void);
 */
 bool test_invalid_octal_tokenizer(void);
 
+
+/* 
+* Tests the division-by-zero validator function.
+*/
+bool test_div_by_zero_validator(void);
+
+
+/*
+* Tests the parentheses validator function.
+*/
+bool test_parens_validator(void);
+

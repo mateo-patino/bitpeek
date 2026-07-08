@@ -21,7 +21,9 @@ static const test_case_t lexer_tests[] = {
     TEST(test_valid_binary_tokenizer),
     TEST(test_invalid_binary_tokenizer),
     TEST(test_valid_octal_tokenizer),
-    TEST(test_invalid_octal_tokenizer)
+    TEST(test_invalid_octal_tokenizer),
+    TEST(test_div_by_zero_validator),
+    TEST(test_parens_validator)
 };
 
 
@@ -290,5 +292,38 @@ bool test_invalid_octal_tokenizer(void) {
     ASSERT_TRUE(!is_number("08", NULL, NULL));
     ASSERT_TRUE(!is_number("09", NULL, NULL));
 
+    return true;
+}
+
+#define dbz_expr_count 8
+static char *div_by_zero_expressions[] = {
+    "10 / 0",
+    "0xff DIV 00",
+    "1 div 0",
+    "1 / 0b0",
+    "0 / 0x0",
+    "01 / 0000000",
+    "0xff + 255 - 0 / 0",
+    "0 over 0"
+};
+
+
+bool test_div_by_zero_validator(void) {
+    for (int i = 0; i < dbz_expr_count; i++) {
+        size_t len = strlen(div_by_zero_expressions[i]);
+        char strbuf[len+1];
+        strncpy(strbuf, div_by_zero_expressions[i], len + 1);
+
+        size_t token_count = count_tokens(div_by_zero_expressions[i]);
+        token_t tokens[token_count];
+        create_tokens_from_string(strbuf, tokens, NULL);
+
+        ASSERT_TRUE(validate_div_by_zero(tokens, token_count) == TOKENS_DIV_BY_ZERO);
+    }
+    return true;
+}
+
+
+bool test_parens_validator(void ){
     return true;
 }
