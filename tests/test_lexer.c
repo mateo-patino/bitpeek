@@ -296,7 +296,7 @@ bool test_invalid_octal_tokenizer(void) {
 }
 
 #define dbz_expr_count 8
-static char *div_by_zero_expressions[] = {
+static const char *div_by_zero_expressions[] = {
     "10 / 0",
     "0xff DIV 00",
     "1 div 0",
@@ -324,6 +324,31 @@ bool test_div_by_zero_validator(void) {
 }
 
 
-bool test_parens_validator(void ){
+#define parens_expr_count 8 
+static const parens_validator_test_t parens_expressions[] = {
+    { "( ( (  ) ) )", TOKENS_OK },
+    { ") (", TOKENS_UNMATCHED_RPARENS },
+    { "( (  ) ) )", TOKENS_UNMATCHED_RPARENS },
+    { "( ( ( ) )", TOKENS_UNMATCHED_LPARENS },
+    { "( (  ) ) ( (  ) ) ( (  ) ) (", TOKENS_UNMATCHED_LPARENS },
+    { "( ( ( ( ( ) ) ) ) ) ( ( ( (  ) ) ) )", TOKENS_OK },
+    { "", TOKENS_OK },
+    { "10 + ( 1 - ( 1 ) )", TOKENS_OK }
+};
+
+
+bool test_parens_validator(void) {
+    for (int i = 0; i < parens_expr_count; i++) {
+        size_t len = strlen(parens_expressions[i].expr);
+        char strbuf[len+1];
+        strncpy(strbuf, parens_expressions[i].expr, len+1);
+
+        size_t token_count = count_tokens(parens_expressions[i].expr);
+        token_t tokens[token_count];
+        create_tokens_from_string(strbuf, tokens, NULL);
+
+        ASSERT_TRUE(validate_parens(tokens, token_count) == parens_expressions[i].expected);
+    }
     return true;
 }
+

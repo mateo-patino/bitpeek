@@ -1,5 +1,7 @@
 #include <stdbool.h>
 
+#include "lexer.h"
+
 /*
 * Calls all of the unit and integration tests for testing the lexer. 
 *
@@ -75,6 +77,11 @@ bool test_invalid_octal_tokenizer(void);
 */
 bool test_div_by_zero_validator(void);
 
+
+typedef struct {
+    const char *expr;
+    tokens_status expected;
+} parens_validator_test_t;
 
 /*
 * Tests the parentheses validator function.
