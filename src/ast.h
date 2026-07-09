@@ -2,6 +2,17 @@
 #define AST_H
 
 #include "token.h"
+#include "lexer.h"
+
+
+typedef enum {
+    AST_OK,
+    AST_INVALID_ARG,
+    AST_INTEGER_OVERFLOW,
+    AST_NEGATIVE_NUMBER,
+    AST_DIV_BY_ZERO,
+    AST_MALLOC_FAILURE
+} ast_status; 
 
 
 /* AST node */
@@ -29,15 +40,23 @@ typedef struct {
 * Builds an Abstract Syntax Tree (AST) given a tokens array 'tokens' and the number
 * of tokens in the array 'tc' (token count).
 *
-* Returns a pointer to an ASTNode representing the root of the tree.
+* Returns a pointer to an ASTNode representing the root of the tree. NULL is returned
+* upon error, and if 'status' is not NULL, a tokens_status code is written there to
+* to describe the error.
+*
+* If an error occurs at any point throughout the AST building process, 'status' is the
+* only way recursive calls can know something wrong happened and halt the creation of the
+* AST.
 */
-ASTNode *create_ast_from_tokens(const token_t *tokens, size_t tc);
+ASTNode *create_ast_from_tokens(const token_t *tokens, size_t tc, tokens_status *status);
 
 
 /*
 * Called by create_ast_from_tokens to perform the recursive routine and build the AST.
+*
+* If an error occurs, NULL is returned and the error is written to 'status' if not NULL.
 */
-ASTNode *create_ast_helper(const token_t *tokens, int low, int high);
+ASTNode *create_ast_helper(const token_t *tokens, int low, int high, tokens_status *status);
 
 
 /* 
