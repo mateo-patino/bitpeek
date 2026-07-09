@@ -318,7 +318,7 @@ bool test_div_by_zero_validator(void) {
         token_t tokens[token_count];
         create_tokens_from_string(strbuf, tokens, NULL);
 
-        ASSERT_TRUE(validate_div_by_zero(tokens, token_count) == TOKENS_DIV_BY_ZERO);
+        ASSERT_TOK_STATUS(TOKENS_DIV_BY_ZERO, validate_div_by_zero(tokens, token_count), div_by_zero_expressions[i]);
     }
     return true;
 }
