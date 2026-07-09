@@ -1,5 +1,6 @@
 #include "ast.h"
 #include "token.h"
+#include "lexer.h"
 
 #include <stdlib.h>
 #include <limits.h>
@@ -20,18 +21,26 @@ ASTNode *init_ast_node(const token_t *tok, ASTNode *left, ASTNode *right) {
 }
 
 
-ASTNode *create_ast_from_tokens(const token_t *tokens, size_t tc) {
+ASTNode *create_ast_from_tokens(const token_t *tokens, size_t tc, ast_status *status) {
     if (!tokens) {
+        if (status) { *status = AST_INVALID_ARG; }
         return NULL;
     }
-    return create_ast_helper(tokens, 0, tc - 1);
+    return create_ast_helper(tokens, 0, tc - 1, status);
 }
 
 
-ASTNode *create_ast_helper(const token_t *tokens, int low, int high) {
+ASTNode *create_ast_helper(const token_t *tokens, int low, int high, ast_status *status) {
+    if (status != AST_OK) {
+        return NULL;
+    }
+
+    ASTNode *new_node;
+
     /* Only one token in the range */
     if (low == high) {
-        return init_ast_node(tokens + low, NULL, NULL);
+        new_node = init_ast_node(tokens + low, NULL, NULL);
+        goto RETURN_NEW_NODE;
     }
     /* Multiple tokens in the range but no more operations (only parens and number remain, so extract the number) */
     else if (!has_any_operations(tokens, low, high)) {
@@ -39,19 +48,33 @@ ASTNode *create_ast_helper(const token_t *tokens, int low, int high) {
 
         /* DEBUG PURPOSES. TODO: remove after this invariant has been proven through testing */
         if (on_index == -1) { 
+            if (status) { *status = AST_ONLY_NUMBER_NOT_FOUND; }
             fprintf(stderr, "\x1b[31m" "Not having any operations does not guarantee that EXACTLY ONE number token exists.\n" "\x1b[0m"); 
             return NULL;
         }
         /* DEBUG PURPOSES */
 
-        return init_ast_node(tokens + on_index, NULL, NULL);
+        new_node = init_ast_node(tokens + on_index, NULL, NULL);
+        goto RETURN_NEW_NODE;
     }
 
     int lo_index = find_last_operation(tokens, low, high);
-    ASTNode *left = create_ast_helper(tokens, low, lo_index - 1);
-    ASTNode *right = create_ast_helper(tokens, lo_index + 1, high);
+    ASTNode *left = create_ast_helper(tokens, low, lo_index - 1, status);
+    if (!left || status != AST_OK) {
+        return NULL;
+    }
+    ASTNode *right = create_ast_helper(tokens, lo_index + 1, high, status);
+    if (!right || status != AST_OK) {
+        return NULL;
+    }
+    new_node = init_ast_node(tokens+lo_index, left, right);
 
-    return init_ast_node(tokens + lo_index, left, right);
+RETURN_NEW_NODE:
+    if (!new_node) {
+        if (status) { *status = AST_MALLOC_FAILURE; }
+        return NULL;
+    }
+    return new_node;
 }
 
 
@@ -62,7 +85,7 @@ value_t evaluate_ast(const AST *ast) {
 
 value_t evaluate_ast_helper(const ASTNode *root) {
     const token_t *tok = root->token;
-    if (root->token->type == NUMBER) {
+    if (tok->type == NUMBER) {
         number_t *num = (number_t *)tok->obj;
         return num->value; 
     }
@@ -81,9 +104,12 @@ value_t evaluate_ast_helper(const ASTNode *root) {
         case MUL:
             return left * right;
         case DIV:
+            if (right == 0) {
+                go bonkers;
+            }
             return left / right;
         default:
-            fprintf(stderr, "Unknown operation!\n");
+            fprintf(stderr, "Error: Unknown operation.\n");
             return 0;
     }
 }
