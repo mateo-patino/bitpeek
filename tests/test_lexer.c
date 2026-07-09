@@ -332,7 +332,7 @@ static const parens_validator_test_t parens_expressions[] = {
     { "( ( ( ) )", TOKENS_UNMATCHED_LPARENS },
     { "( (  ) ) ( (  ) ) ( (  ) ) (", TOKENS_UNMATCHED_LPARENS },
     { "( ( ( ( ( ) ) ) ) ) ( ( ( (  ) ) ) )", TOKENS_OK },
-    { "", TOKENS_OK },
+    { "", TOKENS_INVALID_ARG },
     { "10 + ( 1 - ( 1 ) )", TOKENS_OK }
 };
 
@@ -347,7 +347,7 @@ bool test_parens_validator(void) {
         token_t tokens[token_count];
         create_tokens_from_string(strbuf, tokens, NULL);
 
-        ASSERT_TRUE(validate_parens(tokens, token_count) == parens_expressions[i].expected);
+        ASSERT_TOK_STATUS(parens_expressions[i].expected, validate_parens(tokens, token_count), parens_expressions[i].expr);
     }
     return true;
 }

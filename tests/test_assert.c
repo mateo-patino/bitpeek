@@ -107,3 +107,12 @@ void assert_expr_failed(const char *expr, value_t out, value_t result, const cha
     fprintf(stderr, "   at %s:%i\n", file_name, line);
     fprintf(stderr, "   in %s\n", func);
 }
+
+
+void assert_tok_status_failed(tokens_status expect, tokens_status recv, const char *expr, const char *file_name, int line, const char *func) {
+    fprintf(stderr, BOLD "%s " ANSI_RED "FAILED" ANSI_RESET "\n", func);
+    fprintf(stderr, "   %s\n", expr);
+    fprintf(stderr, "   Expected: %i Received: " BOLD "%i" ANSI_RESET "\n",  expect, recv);
+    fprintf(stderr, "   at %s:%i\n", file_name, line);
+    fprintf(stderr, "   in %s\n", func);
+}

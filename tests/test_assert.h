@@ -2,6 +2,7 @@
 #define TEST_ASSERT_H
 
 #include "token.h"
+#include "lexer.h"
 
 #define ARRAY_LEN(a) (sizeof(a) / sizeof((a)[0]))
 
@@ -102,6 +103,18 @@ void assert_expr_failed(const char *expr, value_t out, value_t result, const cha
         value_t out = _evaluate_expression(expr); \
         if (out != result) { \
             assert_expr_failed(expr, out, result, __FILE__, __LINE__, __func__); \
+            return false; \
+        } \
+    } while (0)
+
+
+void assert_tok_status_failed(tokens_status expect, tokens_status recv, const char *expr, const char *file_name, int line, const char *func);
+#define ASSERT_TOK_STATUS(expect, recv, expr) \
+    do { \
+        tokens_status _expect = (tokens_status)expect; \
+        tokens_status _recv = (tokens_status)recv; \
+        if (_recv != _expect) { \
+            assert_tok_status_failed(_expect, _recv, expr, __FILE__, __LINE__, __func__); \
             return false; \
         } \
     } while (0)
