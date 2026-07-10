@@ -134,7 +134,7 @@ bool has_any_operations(const token_t *tokens, int low, int high);
 * Prints an error message related to an operation described by 'code'.
 * 'msg' is an optional message attached at the end of the error displayed.
 */
-void print_ast_op_error(ast_status code, char *msg);
+void print_ast_error(ast_status code, char *msg);
 
 /* 
 * Returns 'left' + 'right' if the addition does not result in overflow.

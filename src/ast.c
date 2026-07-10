@@ -298,7 +298,7 @@ value_t op_div(value_t left, value_t right, ast_status *status) {
 }
 
 
-void print_ast_op_error(ast_status code, char *msg) {
+void print_ast_error(ast_status code, char *msg) {
     if (!msg) {
         msg = "";
     }
