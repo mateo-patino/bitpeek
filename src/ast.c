@@ -31,7 +31,7 @@ ASTNode *create_ast_from_tokens(const token_t *tokens, size_t tc, ast_status *st
 
 
 ASTNode *create_ast_helper(const token_t *tokens, int low, int high, ast_status *status) {
-    if (status != AST_OK) {
+    if (*status != AST_OK) {
         return NULL;
     }
 
