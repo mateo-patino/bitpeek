@@ -2,15 +2,16 @@
 #define AST_H
 
 #include "token.h"
-#include "lexer.h"
-
 
 typedef enum {
     AST_OK,
     AST_INVALID_ARG,
     AST_INTEGER_OVERFLOW,
-    AST_NEGATIVE_NUMBER,
+    AST_INTEGER_UNDERFLOW,
     AST_DIV_BY_ZERO,
+    AST_ONLY_NUMBER_NOT_FOUND,
+    AST_EXPECTED_OPERATOR,
+    AST_UNKNOWN_OPERATION,
     AST_MALLOC_FAILURE
 } ast_status; 
 
@@ -47,8 +48,10 @@ typedef struct {
 * If an error occurs at any point throughout the AST building process, 'status' is the
 * only way recursive calls can know something wrong happened and halt the creation of the
 * AST.
+*
+* Always set 'status' to AST_OK before calling this function.
 */
-ASTNode *create_ast_from_tokens(const token_t *tokens, size_t tc, tokens_status *status);
+ASTNode *create_ast_from_tokens(const token_t *tokens, size_t tc, ast_status *status);
 
 
 /*
@@ -56,20 +59,26 @@ ASTNode *create_ast_from_tokens(const token_t *tokens, size_t tc, tokens_status 
 *
 * If an error occurs, NULL is returned and the error is written to 'status' if not NULL.
 */
-ASTNode *create_ast_helper(const token_t *tokens, int low, int high, tokens_status *status);
+ASTNode *create_ast_helper(const token_t *tokens, int low, int high, ast_status *status);
 
 
 /* 
 * Traverses the AST recursively to evaluate it.
-* Returns the result of the evaluation as a value_t type.
+* Returns the result of the evaluation as a value_t type. 
+*
+* If evaluation fails, the error is written to 'status' if not NULL. The caller
+* should always check 'status' before using the value returned by this function.
+* If 'status' is not AST_OK, the value returned by evaluate_ast should be ignored.
+*
+* Always set 'status' to AST_OK before evaluating the AST.
 */
-value_t evaluate_ast(const AST *ast);
+value_t evaluate_ast(const AST *ast, ast_status *status);
 
 
 /* 
 * Recursively evaluates an AST.
 */
-value_t evaluate_ast_helper(const ASTNode *root);
+value_t evaluate_ast_helper(const ASTNode *root, ast_status *status);
 
 
 typedef struct {
@@ -120,5 +129,34 @@ void free_subtree(ASTNode *node);
 */
 bool has_any_operations(const token_t *tokens, int low, int high);
 
+
+/* 
+* Prints an error message related to an operation described by 'code'.
+* 'msg' is an optional message attached at the end of the error displayed.
+*/
+void print_ast_op_error(ast_status code, char *msg);
+
+/* 
+* Returns 'left' + 'right' if the addition does not result in overflow.
+*/
+value_t op_add(value_t left, value_t right, ast_status *status);
+
+
+/*
+* Returns 'left' - 'right' if the substraction does not result in a negative number.
+*/
+value_t op_sub(value_t left, value_t right, ast_status *status);
+
+
+/*
+* Returns 'left' * 'right' if the multiplication does not result in overflow.
+*/
+value_t op_mul(value_t left, value_t right, ast_status *status);
+
+
+/*
+* Returns 'left' / 'right' if 'right' != 0.
+*/
+value_t op_div(value_t left, value_t right, ast_status *status);
 
 #endif

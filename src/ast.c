@@ -83,6 +83,7 @@ value_t evaluate_ast(const AST *ast, ast_status *status) {
         if (status) { *status = AST_INVALID_ARG; }
         return (value_t)0;
     }
+    if (status) { *status = AST_OK; } /* Set status to ok before starting evaluation */
     return evaluate_ast_helper(ast->root, status);
 }
 
@@ -126,15 +127,28 @@ value_t evaluate_ast_helper(const ASTNode *root, ast_status *status) {
             if (status && *status != AST_OK) {
                 return (value_t)0;
             }
+            break;
         case SUB:
-            return left - right;
+            retval = op_sub(left, right, status);
+            if (status && *status != AST_OK) {
+                return (value_t)0;
+            }
+            break;
         case MUL:
-            return left * right;
+            retval = op_mul(left, right, status);
+            if (status && *status != AST_OK) {
+                return (value_t)0;
+            }
+            break;
         case DIV:
-            return left / right;
+            retval = op_div(left, right, status);
+            if (status && *status != AST_OK) {
+                return (value_t)0;
+            }
+            break;
         default:
-            fprintf(stderr, "Error: Unknown operation.\n");
-            return 0;
+            if (status) { *status = AST_UNKNOWN_OPERATION; }
+            return (value_t)0;
     }
     return retval;
 }
@@ -266,6 +280,24 @@ value_t op_sub(value_t left, value_t right, ast_status *status) {
 }
 
 
+value_t op_mul(value_t left, value_t right, ast_status *status) {
+    if (right != 0 && left > VALUE_T_MAX / right) {
+        if (status) { *status = AST_INTEGER_OVERFLOW; }
+        return (value_t)0;
+    }
+    return left * right;
+}
+
+
+value_t op_div(value_t left, value_t right, ast_status *status) {
+    if (right == 0) {
+        if (status) { *status = AST_DIV_BY_ZERO; }
+        return (value_t)0;
+    }
+    return left / right;
+}
+
+
 void print_ast_op_error(ast_status code, char *msg) {
     if (!msg) {
         msg = "";
@@ -292,6 +324,8 @@ void print_ast_op_error(ast_status code, char *msg) {
         case AST_EXPECTED_OPERATOR:
             fprintf(stderr, "Error: expected operator. %s\n", msg);
             break;
+        case AST_UNKNOWN_OPERATION:
+            fprintf(stderr, "Error: unknown operation. %s\n", msg);
         case AST_MALLOC_FAILURE:
             fprintf(stderr, "Error: malloc() failed. %s\n", msg);
             break;
