@@ -1,10 +1,10 @@
 #include "ast.h"
 #include "token.h"
-#include "lexer.h"
 
 #include <stdlib.h>
 #include <limits.h>
 #include <stdio.h>
+#include <inttypes.h>
 
 
 
@@ -60,11 +60,11 @@ ASTNode *create_ast_helper(const token_t *tokens, int low, int high, ast_status 
 
     int lo_index = find_last_operation(tokens, low, high);
     ASTNode *left = create_ast_helper(tokens, low, lo_index - 1, status);
-    if (!left || status != AST_OK) {
+    if (!left || *status != AST_OK) {
         return NULL;
     }
     ASTNode *right = create_ast_helper(tokens, lo_index + 1, high, status);
-    if (!right || status != AST_OK) {
+    if (!right || *status != AST_OK) {
         return NULL;
     }
     new_node = init_ast_node(tokens+lo_index, left, right);
@@ -78,40 +78,65 @@ RETURN_NEW_NODE:
 }
 
 
-value_t evaluate_ast(const AST *ast) {
-    return evaluate_ast_helper(ast->root);
+value_t evaluate_ast(const AST *ast, ast_status *status) {
+    if (!ast || !ast->root) {
+        if (status) { *status = AST_INVALID_ARG; }
+        return (value_t)0;
+    }
+    return evaluate_ast_helper(ast->root, status);
 }
 
 
-value_t evaluate_ast_helper(const ASTNode *root) {
+value_t evaluate_ast_helper(const ASTNode *root, ast_status *status) {
+    if (status && *status != AST_OK) {
+        return (value_t)0;
+    }
+
+    if (!root || !root->token) {
+        if (status) { *status = AST_INVALID_ARG; }
+        return (value_t)0;
+    }
+
     const token_t *tok = root->token;
     if (tok->type == NUMBER) {
         number_t *num = (number_t *)tok->obj;
         return num->value; 
     }
 
-    value_t left = evaluate_ast_helper(root->left);
-    value_t right = evaluate_ast_helper(root->right);
+    value_t left = evaluate_ast_helper(root->left, status);
+    if (status && *status != AST_OK) {
+        return (value_t)0;
+    }
+    value_t right = evaluate_ast_helper(root->right, status);
+    if (status && *status != AST_OK) {
+        return (value_t)0;
+    }
+
+    if (tok->type != OPERATOR) {
+        if (status) { *status = AST_EXPECTED_OPERATOR; }
+    }
 
     operator_t *oper = (operator_t *)tok->obj;
     operation_type op = oper->op;
 
+    value_t retval;
     switch (op) {
         case ADD:
-            return left + right;
+            retval = op_add(left, right, status);
+            if (status && *status != AST_OK) {
+                return (value_t)0;
+            }
         case SUB:
             return left - right;
         case MUL:
             return left * right;
         case DIV:
-            if (right == 0) {
-                go bonkers;
-            }
             return left / right;
         default:
             fprintf(stderr, "Error: Unknown operation.\n");
             return 0;
     }
+    return retval;
 }
 
 
@@ -222,3 +247,55 @@ bool has_any_operations(const token_t *tokens, int low, int high) {
 }
 
 
+value_t op_add(value_t left, value_t right, ast_status *status) {
+    if (left > VALUE_T_MAX - right) {
+        if (status) { *status = AST_INTEGER_OVERFLOW; }
+        return (value_t)0;
+    }
+    return left + right;
+}
+
+
+value_t op_sub(value_t left, value_t right, ast_status *status) {
+    if (left < right) {
+        if (status) { *status = AST_INTEGER_UNDERFLOW; }
+        return (value_t)0;
+    }
+    return left - right;
+
+}
+
+
+void print_ast_op_error(ast_status code, char *msg) {
+    if (!msg) {
+        msg = "";
+    }
+    switch (code) {
+        case AST_OK:
+            fprintf(stdout, "AST is valid. %s\n", msg);
+            break;
+        case AST_INVALID_ARG:
+            fprintf(stderr, "Error: invalid argument. %s\n", msg);
+            break;
+        case AST_INTEGER_OVERFLOW:
+            fprintf(stderr, "Error: integer overflow. %s\n", msg);
+            break;
+        case AST_INTEGER_UNDERFLOW:
+            fprintf(stderr, "Error: integer underflow. %s\n", msg);
+            break;
+        case AST_DIV_BY_ZERO:
+            fprintf(stderr, "Error: division by zero. %s\n", msg);
+            break;
+        case AST_ONLY_NUMBER_NOT_FOUND:
+            fprintf(stderr, "Error: malformed AST. Only-number not found. %s\n", msg);
+            break;
+        case AST_EXPECTED_OPERATOR:
+            fprintf(stderr, "Error: expected operator. %s\n", msg);
+            break;
+        case AST_MALLOC_FAILURE:
+            fprintf(stderr, "Error: malloc() failed. %s\n", msg);
+            break;
+        default:
+            fprintf(stderr, "%i is not a registered AST status code. \n", code);
+    } 
+}
