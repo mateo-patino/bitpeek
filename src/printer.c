@@ -1,6 +1,17 @@
 #include "printer.h"
 
 #include <inttypes.h>
+#include <limits.h>
+
+
+int find_highest_exponent_2(value_t res) {
+    for (int exp = CHAR_BIT * sizeof(value_t) - 1; exp >= 0; exp--) {
+        if (res & ((value_t)1 << exp)) {
+            return exp;
+        }
+    }
+    return 0;
+}
 
 
 void pretty_print_value(FILE *stream, value_t res, int base, bool caps, bool add_newline) {
@@ -9,7 +20,7 @@ void pretty_print_value(FILE *stream, value_t res, int base, bool caps, bool add
     }
     switch(base) {
         case 2:
-            print_binary(stream, res, caps);
+            print_binary(stream, res, GROUP_BINARY_BY);
             break;
         case 8:
             fprintf(stream, "0%" PRIo64, res);
@@ -35,6 +46,9 @@ void pretty_print_value(FILE *stream, value_t res, int base, bool caps, bool add
 }
 
 void print_all_bases(FILE *stream, value_t res, bool caps) {
+    if (!stream) {
+        return;
+    }
     fprintf(stream, "Binary:      ");
     pretty_print_value(stream, res, 2, caps, true);
 
@@ -49,9 +63,38 @@ void print_all_bases(FILE *stream, value_t res, bool caps) {
 }
 
 
-void print_binary(FILE *stream, value_t res, bool caps) {
-    /* TODO: write a compiler-independent printer (i.e. don't use %b) */
-    fprintf(stream, "Unavailable");
-    (void)res;
-    (void)caps;
+void print_binary(FILE *stream, value_t res, int group_by) {
+    if (!stream) {
+        return;
+    }
+    fprintf(stream, "0b ");
+
+    int highest_exponent = find_highest_exponent_2(res); 
+    int digits = highest_exponent + 1;
+    int digits_printed = 0;
+
+    /* Add padding to print whole groups if needed */
+    int rem;
+    if ((rem = digits % group_by) != 0) {
+        int zero_padding = group_by - rem;
+        for (int i = 0; i < zero_padding; i++) {
+            fputc('0', stream);
+            digits_printed++;
+        }
+    }
+    
+    for (int exp = highest_exponent; exp >= 0; exp--) {
+        if (res & ((value_t)1 << exp)) {
+            fputc('1', stream);
+        }
+        else {
+            fputc('0', stream);
+        }
+
+        digits_printed++;
+        if (digits_printed < digits && digits_printed % group_by == 0) {
+            fputc(' ', stream);
+        }
+    }
 }
+
