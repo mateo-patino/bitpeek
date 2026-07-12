@@ -59,7 +59,7 @@ int run_forked_tests(const test_case_t *tests, size_t test_count, int *signaled)
         else if (WIFSIGNALED(status)) {
             /* TODO: implement a printer for the signal number */
             fprintf(stderr, BOLD "%s " ANSI_RED "CRASHED (signal %i)" ANSI_RESET "\n", tests[i].name, WTERMSIG(status)); 
-            signaled++;
+            crashes++;
         }
    }
 
