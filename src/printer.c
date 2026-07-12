@@ -71,18 +71,20 @@ void pretty_print_binary(FILE *stream, value_t res, int group_by) {
 
     int highest_exponent = find_highest_exponent_2(res); 
     int digits = highest_exponent + 1;
-    int digits_printed = 0;
 
     /* Add padding to print whole groups if needed */
+    int digits_printed = 0;
     int rem;
+    int padding = 0;
     if ((rem = digits % group_by) != 0) {
-        int zero_padding = group_by - rem;
-        for (int i = 0; i < zero_padding; i++) {
+        padding = group_by - rem;
+        for (int i = 0; i < padding; i++) {
             fputc('0', stream);
             digits_printed++;
         }
     }
     
+    int total_digits = digits + padding;
     for (int exp = highest_exponent; exp >= 0; exp--) {
         if (res & ((value_t)1 << exp)) {
             fputc('1', stream);
@@ -90,9 +92,9 @@ void pretty_print_binary(FILE *stream, value_t res, int group_by) {
         else {
             fputc('0', stream);
         }
-
         digits_printed++;
-        if (digits_printed < digits && digits_printed % group_by == 0) {
+
+        if (digits_printed < total_digits && digits_printed % group_by == 0) {
             fputc(' ', stream);
         }
     }
