@@ -45,15 +45,10 @@ ASTNode *create_ast_helper(const token_t *tokens, int low, int high, ast_status 
     /* Multiple tokens in the range but no more operations (only parens and number remain, so extract the number) */
     else if (!has_any_operations(tokens, low, high)) {
         int on_index = find_only_number(tokens, low, high);
-
-        /* DEBUG PURPOSES. TODO: remove after this invariant has been proven through testing */
         if (on_index == -1) { 
-            if (status) { *status = AST_ONLY_NUMBER_NOT_FOUND; }
-            fprintf(stderr, "\x1b[31m" "Not having any operations does not guarantee that EXACTLY ONE number token exists.\n" "\x1b[0m"); 
+            if (status) { *status = AST_INVALID_EXPRESSION; }
             return NULL;
         }
-        /* DEBUG PURPOSES */
-
         new_node = init_ast_node(tokens + on_index, NULL, NULL);
         goto RETURN_NEW_NODE;
     }
@@ -319,8 +314,8 @@ void print_ast_error(ast_status code, char *msg) {
         case AST_DIV_BY_ZERO:
             fprintf(stderr, "Error: division by zero. %s\n", msg);
             break;
-        case AST_ONLY_NUMBER_NOT_FOUND:
-            fprintf(stderr, "Error: malformed AST. Only-number not found. %s\n", msg);
+        case AST_INVALID_EXPRESSION:
+            fprintf(stderr, "Error: invalid expression.%s\n", msg);
             break;
         case AST_EXPECTED_OPERATOR:
             fprintf(stderr, "Error: expected operator. %s\n", msg);
