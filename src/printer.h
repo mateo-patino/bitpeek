@@ -130,9 +130,9 @@ void raw_print_decimal(FILE *stream, value_t res, bool add_newline);
 
 
 /*
-* Prints 'res' in hexadecimal to 'stream' without any prefixes or grouping.. 
+* Prints 'res' in hexadecimal to 'stream' without any prefixes or grouping. 
 */
-void raw_print_hexadecimal(FILE *stream, value_t res, bool add_newline);
+void raw_print_hexadecimal(FILE *stream, value_t res, bool caps, bool add_newline);
 
 #endif
 

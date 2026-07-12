@@ -270,3 +270,19 @@ void raw_print_decimal(FILE *stream, value_t res, bool add_newline) {
         fprintf(stream, "\n");
     }
 }
+
+
+void raw_print_hexadecimal(FILE *stream, value_t res, bool caps, bool add_newline) {
+    if (!stream) {
+        return;
+    }
+    char buf[MAXLEN_HEX_STR];
+    int digits = get_digits_in_base(res, 16, buf);
+    for (int i = digits - 1; i >= 0; i--) {
+        fputc(num_to_hex_digit(buf[i], caps), stream);
+    }
+
+    if (add_newline) {
+        fprintf(stream, "\n");
+    }
+}
