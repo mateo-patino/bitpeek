@@ -58,6 +58,22 @@ void pretty_print_all_bases(FILE *stream, value_t res, bool caps) {
 }
 
 
+int print_group_zero_padding(FILE *stream, int digits, int group_by) {
+    if (!stream) {
+        return -1;
+    }
+    int padding = 0;
+    int rem;
+    if ((rem = digits % group_by) != 0) {
+        padding = group_by - rem;
+        for (int i = 0; i < padding; i++) {
+            fputc('0', stream);
+        }
+    }
+    return padding;
+}
+
+
 void pretty_print_binary(FILE *stream, value_t res, int group_by) {
     if (!stream) {
         return;
@@ -68,17 +84,9 @@ void pretty_print_binary(FILE *stream, value_t res, int group_by) {
     int digits = highest_exponent + 1;
 
     /* Add padding to print whole groups if needed */
-    int digits_printed = 0;
-    int rem;
-    int padding = 0;
-    if ((rem = digits % group_by) != 0) {
-        padding = group_by - rem;
-        for (int i = 0; i < padding; i++) {
-            fputc('0', stream);
-            digits_printed++;
-        }
-    }
+    int padding = print_group_zero_padding(stream, digits, group_by);
     
+    int digits_printed = padding;
     int total_digits = digits + padding;
     for (int exp = highest_exponent; exp >= 0; exp--) {
         if (res & ((value_t)1 << exp)) {
@@ -107,7 +115,7 @@ void pretty_print_octal(FILE *stream, value_t res, int group_by) {
     char remainder;
     int digits = 0;
 
-    /* Compute octal digits via division by 8 and recording remainders */
+    /* Compute octal digits by recording remainders */
     do {
         remainder = quotient % 8;
         quotient = quotient / 8;
@@ -115,17 +123,9 @@ void pretty_print_octal(FILE *stream, value_t res, int group_by) {
     } while (quotient > 0);
 
     /* Pad to achieve whole groups */
-    int digits_printed = 0;
-    int padding = 0;
-    int rem;
-    if ((rem = digits % group_by) != 0) {
-        padding = group_by - rem;
-        for (int i = 0; i < padding; i++) {
-            fputc('0', stream);
-            digits_printed++;
-        }
-    }
+    int padding = print_group_zero_padding(stream, digits, group_by);
     
+    int digits_printed = padding;
     int total_digits = digits + padding;
     for (int i = digits - 1; i >= 0; i--) {
         fputc('0' + buf[i], stream);
@@ -143,7 +143,7 @@ void pretty_print_decimal(FILE *stream, value_t res) {
     if (!stream) {
         return;
     }
-    /* Compute least-significant thousand outside the recursion */ 
+    /* Compute least-significant thousand outside the recursion (to skip comma) */ 
     value_t rem = res % 1000;
     bool is_mst = pp_decimal_helper(stream, res / 1000);
 
@@ -196,17 +196,10 @@ void pretty_print_hexadecimal(FILE *stream, value_t res, int group_by, bool caps
         buf[digits++] = remainder; /* Save the raw value 0-15 */
     } while (quotient > 0);
    
-    int padding = 0;
-    int digits_printed = 0;
-    int rem;
-    if ((rem = digits % group_by) != 0) {
-        padding = group_by - rem;
-        for (int i = 0; i < padding; i++) {
-            fputc('0', stream);
-            digits_printed++;
-        }
-    }
+    /* Add padding if needed */
+    int padding = print_group_zero_padding(stream, digits, group_by);
 
+    int digits_printed = padding;
     int total_digits = digits + padding;
     for (int i = digits - 1; i >= 0; i--) {
         fputc(num_to_hex_digit(buf[i], caps), stream);
@@ -220,24 +213,12 @@ void pretty_print_hexadecimal(FILE *stream, value_t res, int group_by, bool caps
 
 
 char num_to_hex_digit(char num, bool caps) {
+    if (num < 0 || num > 15) {
+        return '?';
+    }
+
     if (num >= 0 && num <= 9) {
         return '0' + num;
     }
-
-    switch (num) {
-        case 10:
-            return caps ? 'A' : 'a';
-        case 11:
-            return caps ? 'B' : 'b';
-        case 12:
-            return caps ? 'C' : 'c';
-        case 13:
-            return caps ? 'D' : 'd';
-        case 14:
-            return caps ? 'E' : 'e';
-        case 15:
-            return caps ? 'F' : 'f';
-    }
-
-    return '0';
+    return (caps ? 'A' : 'a') + (num - 10);
 }

@@ -30,6 +30,16 @@ void pretty_print_all_bases(FILE *stream, value_t res, bool caps);
 
 
 /*
+* Prints group_by - (digits % group_by) zeroes to stream, adding padding zeroes
+* to number whose digits are to be grouped by 'group_by' digits.
+*
+* Upon success, it returns the number of padding zeroes printed which may be 0 or more.
+* It returns -1 if 'stream' is NULL.
+*/
+int print_group_zero_padding(FILE *stream, int digits, int group_by);
+
+
+/*
 * Prints 'res' in binary format to 'stream'. 
 *
 * The digits of the printer number are arranged in groups of 'group_by' digits and 
