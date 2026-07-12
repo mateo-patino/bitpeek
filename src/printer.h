@@ -100,4 +100,27 @@ char num_to_hex_digit(char num, bool caps);
 void pretty_print_value(FILE* stream, value_t res, int base, bool caps, bool add_newline);
 
 
+/*
+* Prints 'res' in binary to 'stream' without any prefixes or grouping. 
+*/
+void raw_print_binary(FILE *stream, value_t res, bool add_newline);
+
+
+/*
+* Prints 'res' in octal to 'stream' without any prefixes or grouping. 
+*/
+void raw_print_octal(FILE *stream, value_t res, bool add_newline);
+
+/*
+* Prints 'res' in decimal to 'stream' without any commas. 
+*/
+void raw_print_decimal(FILE *stream, value_t res, bool add_newline);
+
+
+/*
+* Prints 'res' in hexadecimal to 'stream' without any prefixes or grouping.. 
+*/
+void raw_print_hexadecimal(FILE *stream, value_t res, bool add_newline);
+
 #endif
+

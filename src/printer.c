@@ -119,7 +119,7 @@ void pretty_print_octal(FILE *stream, value_t res, int group_by) {
     do {
         remainder = quotient % 8;
         quotient = quotient / 8;
-        buf[digits++] = remainder;
+buf[digits++] = remainder;
     } while (quotient > 0);
 
     /* Pad to achieve whole groups */
@@ -221,4 +221,24 @@ char num_to_hex_digit(char num, bool caps) {
         return '0' + num;
     }
     return (caps ? 'A' : 'a') + (num - 10);
+}
+
+
+void raw_print_binary(FILE *stream, value_t res, bool add_newline) {
+    if (!stream) {
+        return;
+    }
+    int highest_exp = find_highest_exponent_2(res);
+    for (int exp = highest_exp; exp >= 0; exp--) {
+        if (res & ((value_t)1 << exp)) {
+            fputc('1', stream);
+        }
+        else {
+            fputc('0', stream);
+        }
+    }
+
+    if (add_newline) {
+        fprintf(stream, "\n");
+    }
 }
