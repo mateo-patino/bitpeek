@@ -67,6 +67,20 @@ void pretty_print_decimal(FILE *stream, value_t res);
 */
 bool pp_decimal_helper(FILE *stream, value_t quotient);
 
+/* 4 bits equal one hex digit */
+#define MAXLEN_HEX_STR (int)(CHAR_BIT * sizeof(value_t) / 4)
+
+/*
+* Pretty prints 'res' to 'stream' in hexadecimal.
+*/
+void pretty_print_hexadecimal(FILE *stream, value_t res, int group_by, bool caps);
+
+
+/*
+* Maps a number 0-15 to a hexadecimal digit 0-F or 0-f depending on 'caps'.
+*/
+char num_to_hex_digit(char num, bool caps);
+
 
 /* 
 * Pretty prints a value 'res' to 'stream' in the 'base' number system.

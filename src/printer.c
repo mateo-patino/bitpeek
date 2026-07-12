@@ -29,12 +29,7 @@ void pretty_print_value(FILE *stream, value_t res, int base, bool caps, bool add
             pretty_print_decimal(stream, res);
             break;
         case 16:
-            if (caps) {
-                fprintf(stream, "0x%" PRIX64, res);
-            }
-            else {
-                fprintf(stream, "0x%" PRIx64, res);
-            }
+            pretty_print_hexadecimal(stream, res, GROUP_HEX_BY, caps);
             break;
         default:
             break;
@@ -109,7 +104,7 @@ void pretty_print_octal(FILE *stream, value_t res, int group_by) {
 
     char buf[MAXLEN_OCTAL_STR];
     value_t quotient = res;
-    int remainder;
+    char remainder;
     int digits = 0;
 
     /* Compute octal digits via division by 8 and recording remainders */
@@ -148,8 +143,11 @@ void pretty_print_decimal(FILE *stream, value_t res) {
     if (!stream) {
         return;
     }
+    /* Compute least-significant thousand outside the recursion */ 
     value_t rem = res % 1000;
     bool is_mst = pp_decimal_helper(stream, res / 1000);
+
+    /* If this frame's 'rem' is the most-significant thousand, don't pad */
     if (!is_mst && rem < 100) {
         int padding = rem > 9 ? 1 : 2;
         for (int i = 0; i < padding; i++) {
@@ -162,10 +160,13 @@ void pretty_print_decimal(FILE *stream, value_t res) {
 
 bool pp_decimal_helper(FILE *stream, value_t quotient) {
     if (!quotient) {
+        /* The caller whose quotient gave zero must be the MST */
         return true;
     }
     value_t rem = quotient % 1000;
     bool is_mst = pp_decimal_helper(stream, quotient / 1000);
+
+    /* If this frame's 'rem' is the most-significant thousand, don't pad */
     if (!is_mst && rem < 100) {
         int padding = rem > 9 ? 1 : 2;
         for (int i = 0; i < padding; i++) {
@@ -174,4 +175,69 @@ bool pp_decimal_helper(FILE *stream, value_t quotient) {
     }
     fprintf(stream, "%" PRIu64 ",", rem);
     return false;
+}
+
+
+void pretty_print_hexadecimal(FILE *stream, value_t res, int group_by, bool caps) {
+    if (!stream) {
+        return;
+    }
+    fprintf(stream, "0x ");
+
+    char buf[MAXLEN_HEX_STR];
+    char remainder;
+    int quotient = res;
+    int digits = 0;
+
+    /* Record hex digits from least-significant digit to most-significant */
+    do {
+        remainder = quotient % 16;
+        quotient = quotient / 16;
+        buf[digits++] = remainder; /* Save the raw value 0-15 */
+    } while (quotient > 0);
+   
+    int padding = 0;
+    int digits_printed = 0;
+    int rem;
+    if ((rem = digits % group_by) != 0) {
+        padding = group_by - rem;
+        for (int i = 0; i < padding; i++) {
+            fputc('0', stream);
+            digits_printed++;
+        }
+    }
+
+    int total_digits = digits + padding;
+    for (int i = digits - 1; i >= 0; i--) {
+        fputc(num_to_hex_digit(buf[i], caps), stream);
+        digits_printed++;
+
+        if (digits_printed < total_digits && digits_printed % group_by == 0) {
+            fputc(' ', stream);
+        }
+    }
+}
+
+
+char num_to_hex_digit(char num, bool caps) {
+    if (num >= 0 && num <= 9) {
+        return '0' + num;
+    }
+
+    switch (num) {
+        case 10:
+            return caps ? 'A' : 'a';
+        case 11:
+            return caps ? 'B' : 'b';
+        case 12:
+            return caps ? 'C' : 'c';
+        case 13:
+            return caps ? 'D' : 'd';
+        case 14:
+            return caps ? 'E' : 'e';
+        case 15:
+            return caps ? 'F' : 'f';
+    }
+
+    return '0';
 }
