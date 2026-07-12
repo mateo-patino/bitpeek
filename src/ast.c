@@ -31,7 +31,7 @@ ASTNode *create_ast_from_tokens(const token_t *tokens, size_t tc, ast_status *st
 
 
 ASTNode *create_ast_helper(const token_t *tokens, int low, int high, ast_status *status) {
-    if (*status != AST_OK) {
+    if (status && *status != AST_OK) {
         return NULL;
     }
 
@@ -55,11 +55,11 @@ ASTNode *create_ast_helper(const token_t *tokens, int low, int high, ast_status 
 
     int lo_index = find_last_operation(tokens, low, high);
     ASTNode *left = create_ast_helper(tokens, low, lo_index - 1, status);
-    if (!left || *status != AST_OK) {
+    if (!left || (status && *status != AST_OK)) {
         return NULL;
     }
     ASTNode *right = create_ast_helper(tokens, lo_index + 1, high, status);
-    if (!right || *status != AST_OK) {
+    if (!right || (status && *status != AST_OK)) {
         return NULL;
     }
     new_node = init_ast_node(tokens+lo_index, left, right);
