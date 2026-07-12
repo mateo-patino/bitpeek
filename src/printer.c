@@ -213,11 +213,12 @@ void pretty_print_hexadecimal(FILE *stream, value_t res, int group_by, bool caps
 
 
 char num_to_hex_digit(char num, bool caps) {
-    if (num < 0 || num > 15) {
+    /* num is always >= 0 due to char type*/
+    if (num > 15) {
         return '?';
     }
 
-    if (num >= 0 && num <= 9) {
+    if (num <= 9) {
         return '0' + num;
     }
     return (caps ? 'A' : 'a') + (num - 10);
