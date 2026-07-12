@@ -4,6 +4,23 @@
 #include <limits.h>
 
 
+int get_digits_in_base(value_t res, int base, char *buf) {
+    if (!buf || base < 2) {
+        return 0;
+    }
+    value_t quotient = res;
+    char remainder;
+    int digits = 0;
+    do {
+        remainder = quotient % base;
+        quotient = quotient / base;
+        buf[digits++] = remainder;
+    } while (quotient > 0);
+
+    return digits;
+}
+
+
 int find_highest_exponent_2(value_t res) {
     for (int exp = CHAR_BIT * sizeof(value_t) - 1; exp >= 0; exp--) {
         if (res & ((value_t)1 << exp)) {
@@ -25,7 +42,7 @@ void pretty_print_value(FILE *stream, value_t res, int base, bool caps, bool add
         case 8:
             pretty_print_octal(stream, res, GROUP_OCTAL_BY);
             break;
-        case 10:
+case 10:
             pretty_print_decimal(stream, res);
             break;
         case 16:
@@ -44,16 +61,16 @@ void pretty_print_all_bases(FILE *stream, value_t res, bool caps) {
     if (!stream) {
         return;
     }
-    fprintf(stream, "Binary:      ");
+    fprintf(stream, "Binary:         ");
     pretty_print_value(stream, res, 2, caps, true);
 
-    fprintf(stream, "Octal:       ");
+    fprintf(stream, "Octal:          ");
     pretty_print_value(stream, res, 8, caps, true);
 
-    fprintf(stream, "Decimal:     ");
+    fprintf(stream, "Decimal:        ");
     pretty_print_value(stream, res, 10, caps, true);
 
-    fprintf(stream, "Hexadecimal: ");
+    fprintf(stream, "Hexadecimal:    ");
     pretty_print_value(stream, res, 16, caps, true);
 }
 
@@ -110,17 +127,9 @@ void pretty_print_octal(FILE *stream, value_t res, int group_by) {
     }
     fprintf(stream, "0 ");
 
+    /* Write digits in octal to buffer */
     char buf[MAXLEN_OCTAL_STR];
-    value_t quotient = res;
-    char remainder;
-    int digits = 0;
-
-    /* Compute octal digits by recording remainders */
-    do {
-        remainder = quotient % 8;
-        quotient = quotient / 8;
-buf[digits++] = remainder;
-    } while (quotient > 0);
+    int digits = get_digits_in_base(res, 8, buf);
 
     /* Pad to achieve whole groups */
     int padding = print_group_zero_padding(stream, digits, group_by);
@@ -185,17 +194,8 @@ void pretty_print_hexadecimal(FILE *stream, value_t res, int group_by, bool caps
     fprintf(stream, "0x ");
 
     char buf[MAXLEN_HEX_STR];
-    char remainder;
-    int quotient = res;
-    int digits = 0;
+    int digits = get_digits_in_base(res, 16, buf);
 
-    /* Record hex digits from least-significant digit to most-significant */
-    do {
-        remainder = quotient % 16;
-        quotient = quotient / 16;
-        buf[digits++] = remainder; /* Save the raw value 0-15 */
-    } while (quotient > 0);
-   
     /* Add padding if needed */
     int padding = print_group_zero_padding(stream, digits, group_by);
 
@@ -238,6 +238,34 @@ void raw_print_binary(FILE *stream, value_t res, bool add_newline) {
         }
     }
 
+    if (add_newline) {
+        fprintf(stream, "\n");
+    }
+}
+
+
+void raw_print_octal(FILE *stream, value_t res, bool add_newline) {
+    if (!stream) {
+        return;
+    }
+    char buf[MAXLEN_OCTAL_STR];
+    int digits = get_digits_in_base(res, 8, buf);
+    for (int i = digits - 1; i >= 0; i--) {
+        fputc('0' + buf[i], stream);
+    }
+    
+    if (add_newline) {
+        fprintf(stream, "\n");
+    }
+}
+
+
+void raw_print_decimal(FILE *stream, value_t res, bool add_newline) {
+    if (!stream) {
+        return;
+    }
+    fprintf(stream, "%" PRIu64, res);
+    
     if (add_newline) {
         fprintf(stream, "\n");
     }

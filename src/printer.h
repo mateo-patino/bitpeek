@@ -19,6 +19,18 @@
 
 
 /*
+* Converts a decimal number 'res' to a base-'base' system by writing 
+* its digits in base 'base' to a buffer 'buf'. The least-siginificant
+* digit is written to 'buf', so to read the digits in the right order
+* (from most to least signifcant), you must read 'buf' backwards. 
+*
+* It returns the number of digits written to 'buf'. The most significant
+* digit will be at buf[digits - 1].
+*/
+int get_digits_in_base(value_t res, int base, char *buf);
+
+
+/*
 * Returns the highest power of 2 needed to represent 'res' in binary form.
 */
 int find_highest_exponent_2(value_t res);
