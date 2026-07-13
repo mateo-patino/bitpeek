@@ -264,22 +264,97 @@ void op_type_to_str(operation_type op, bool add_newline) {
 
 
 void assert_node_op_failed(ASTNode *node, operation_type expected_op, const char *file_name, int line, const char *func) {
-    char *node_op_str = NULL;
-    if (!node || !node->token || node->token->type != OPERATOR || !node->token->obj) {
-        node_op_str = "Invalid token type or null token or obj pointers";
-    }
     fprintf(stderr, BOLD "%s " ANSI_RED "FAILED" ANSI_RESET "\n", func);
     fprintf(stderr, "   Expected: ");
     op_type_to_str(expected_op, false);
-    fprintf(stderr, BOLD " Received: ");
-    if (!node_op_str) {
-        operator_t *oper = (operator_t *)node->token->obj;
-        op_type_to_str(oper->op, false);
+    fputc(' ', stderr);
+    print_received(node, OPERATOR);
+    fprintf(stderr, "   at %s:%i\n", file_name, line);
+    fprintf(stderr, "   in %s\n", func);
+}
+
+
+bool assert_node_number_helper(ASTNode *node, value_t expected) {
+    if (!node || !node->token || node->token->type != NUMBER) {
+        return false;
+    }
+    number_t *num = (number_t *)node->token->obj;
+    if (!num || num->value != expected) {
+        return false;
+    }
+    return true;
+}
+
+
+void token_type_to_str(token_type type, bool add_newline) {
+    switch (type) {
+        case OPERATOR:
+            fprintf(stderr, "OPERATOR");
+            break;
+        case NUMBER:
+            fprintf(stderr, "NUMBER");
+            break;
+        case LPAREN:
+            fprintf(stderr, "LPAREN");
+            break;
+        case RPAREN:
+            fprintf(stderr, "RPAREN");
+            break;
+        case INVALID_TOKEN:
+            fprintf(stderr, "INVALID_TOKEN");
+            break;
+        default:
+            fprintf(stderr, "UNKNOWN_TOKEN");
+            break;
+    }
+
+    if (add_newline) {
+        fputc('\n', stderr);
+    }
+}
+
+void print_received(ASTNode *node, token_type target_token_type) {
+    fprintf(stderr, BOLD "Received: ");
+    bool print_token_type = false;
+    char *alt_str = NULL;
+    if (!node) {
+        alt_str = "NULL node pointer";
+    }
+    else if (!node->token) {
+        alt_str = "NULL token pointer";
+    }
+    else if (!node->token->obj) {
+        alt_str = "NULL obj pointer";
+    }
+    else if (node->token->type != target_token_type) {
+        print_token_type = true;
+        alt_str = "Token ";
+    }
+
+    if (!alt_str) {
+        if (target_token_type == NUMBER) {
+            number_t *num = (number_t *)node->token->obj;
+            fprintf(stderr, "%" PRIu64, num->value);
+        }
+        else if (target_token_type == OPERATOR) {
+            operator_t *oper = (operator_t *)node->token->obj;
+            op_type_to_str(oper->op, false);
+        }
     }
     else {
-        fprintf(stderr, "%s", node_op_str);
+        fprintf(stderr, "%s", alt_str);
+        if (print_token_type) {
+            token_type_to_str(node->token->type, false);
+        }
     }
     fprintf(stderr, ANSI_RESET "\n");
+}
+
+
+void assert_node_number_failed(ASTNode *node, value_t expected, const char *file_name, int line, const char *func) {
+    fprintf(stderr, BOLD "%s " ANSI_RED "FAILED" ANSI_RESET "\n", func);
+    fprintf(stderr, "   Expected: %" PRIu64 " ", expected);
+    print_received(node, NUMBER);
     fprintf(stderr, "   at %s:%i\n", file_name, line);
     fprintf(stderr, "   in %s\n", func);
 }

@@ -145,19 +145,35 @@ void tokens_status_to_str(tokens_status status, bool add_newline);
     } while (0)
 
 
+/* Checks a node is an operation token and matches the type */
 bool assert_node_op_helper(ASTNode *node, operation_type expected_op);
 void assert_node_op_failed(ASTNode *node, operation_type expected_op, const char *file_name, int line, const char *func);
+void print_received(ASTNode *node, token_type target_token_type);
 void op_type_to_str(operation_type op, bool add_newline);
-/* Checks a node pointer is an operation token and matches the type */
 #define ASSERT_NODE_OP(node_ptr, expected_op_type) \
     do { \
         ASTNode *node = node_ptr; \
-        operation_type op = expected_operation_type; \
+        operation_type op = expected_op_type; \
         if (!assert_node_op_helper(node, op)) { \
             assert_node_op_failed(node, op, __FILE__, __LINE__, __func__); \
             return false; \
         } \
     } while (0) 
+
+
+/* Checks a node is a number token and its value is correct. */
+bool assert_node_number_helper(ASTNode *node, value_t expected);
+void assert_node_number_failed(ASTNode *node, value_t expected, const char *file_name, int line, const char *func);
+void token_type_to_str(token_type type, bool add_newline);
+#define ASSERT_NODE_NUMBER(node_ptr, expected_val) \
+    do { \
+        ASTNode *node = node_ptr; \
+        value_t expected = expected_val; \
+        if (!assert_node_number_helper(node, expected)) { \
+            assert_node_number_failed(node, expected, __FILE__, __LINE__, __func__); \
+            return false; \
+        } \
+    } while (0)
 
 
 #endif
