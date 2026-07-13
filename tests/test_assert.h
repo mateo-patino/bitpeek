@@ -3,8 +3,15 @@
 
 #include "token.h"
 #include "lexer.h"
+#include "ast.h"
 
 #define ARRAY_LEN(a) (sizeof(a) / sizeof((a)[0]))
+
+
+/*
+* Returns a pointer to the root node of an AST initialized from an expression.
+*/
+ASTNode *_initialize_ast_from_expression(const char *expr);
 
 
 /*
@@ -136,5 +143,21 @@ void tokens_status_to_str(tokens_status status, bool add_newline);
             return false; \
         } \
     } while (0)
+
+
+bool assert_node_op_helper(ASTNode *node, operation_type expected_op);
+void assert_node_op_failed(ASTNode *node, operation_type expected_op, const char *file_name, int line, const char *func);
+void op_type_to_str(operation_type op, bool add_newline);
+/* Checks a node pointer is an operation token and matches the type */
+#define ASSERT_NODE_OP(node_ptr, expected_op_type) \
+    do { \
+        ASTNode *node = node_ptr; \
+        operation_type op = expected_operation_type; \
+        if (!assert_node_op_helper(node, op)) { \
+            assert_node_op_failed(node, op, __FILE__, __LINE__, __func__); \
+            return false; \
+        } \
+    } while (0) 
+
 
 #endif

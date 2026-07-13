@@ -70,6 +70,16 @@ int run_forked_tests(const test_case_t *tests, size_t test_count, int *signaled)
 }
 
 
+ASTNode *_initialize_ast_from_expression(const char *expr) {
+    /* Note this leaks the memory allocated for the tokens. It's fine */
+    token_t *tokens;
+    size_t tc;
+    tokens = _tokenize_from_expression(expr, NULL, &tc);
+    return create_ast_from_tokens(tokens, tc, NULL);
+
+}
+
+
 token_t *_tokenize_from_expression(const char *expr, tokens_status *status, size_t *tc) {
     if (!expr) { return NULL; }
 
@@ -204,8 +214,72 @@ void assert_tok_status_failed(tokens_status expect, tokens_status recv, const ch
     fprintf(stderr, "   %s\n", expr);
     fprintf(stderr, "   Expected: "); 
     tokens_status_to_str(expect, false);
-    fprintf(stderr, " Received: ");
+    fprintf(stderr, BOLD " Received: ");
     tokens_status_to_str(recv, true);
+    fprintf(stderr, ANSI_RESET);
+    fprintf(stderr, "   at %s:%i\n", file_name, line);
+    fprintf(stderr, "   in %s\n", func);
+}
+
+
+
+bool assert_node_op_helper(ASTNode *node, operation_type expected_op) {
+    if (!node || !node->token || node->token->type != OPERATOR) {
+        return false;
+    }
+    operator_t *oper = (operator_t *)node->token->obj;
+    if (!oper || oper->op != expected_op) {
+        return false;
+    }
+    return true;
+}
+
+
+void op_type_to_str(operation_type op, bool add_newline) {
+    switch (op) {
+        case ADD:
+            fprintf(stderr, "ADD");
+            break;
+        case SUB:
+            fprintf(stderr, "SUB");
+            break;
+        case MUL:
+            fprintf(stderr, "MUL");
+            break;
+        case DIV:
+            fprintf(stderr, "DIV");
+            break;
+        case NUM_OP:
+            fprintf(stderr, "NUM_OP");
+            break;
+        default:
+            fprintf(stderr, "UNKNOWN_OP");
+            break;
+    }
+
+    if (add_newline) {
+        fputc('\n', stderr);
+    }
+}
+
+
+void assert_node_op_failed(ASTNode *node, operation_type expected_op, const char *file_name, int line, const char *func) {
+    char *node_op_str = NULL;
+    if (!node || !node->token || node->token->type != OPERATOR || !node->token->obj) {
+        node_op_str = "Invalid token type or null token or obj pointers";
+    }
+    fprintf(stderr, BOLD "%s " ANSI_RED "FAILED" ANSI_RESET "\n", func);
+    fprintf(stderr, "   Expected: ");
+    op_type_to_str(expected_op, false);
+    fprintf(stderr, BOLD " Received: ");
+    if (!node_op_str) {
+        operator_t *oper = (operator_t *)node->token->obj;
+        op_type_to_str(oper->op, false);
+    }
+    else {
+        fprintf(stderr, "%s", node_op_str);
+    }
+    fprintf(stderr, ANSI_RESET "\n");
     fprintf(stderr, "   at %s:%i\n", file_name, line);
     fprintf(stderr, "   in %s\n", func);
 }
