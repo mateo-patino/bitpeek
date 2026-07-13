@@ -345,6 +345,10 @@ void print_received(ASTNode *node, token_type target_token_type) {
         fprintf(stderr, "%s", alt_str);
         if (print_token_type) {
             token_type_to_str(node->token->type, false);
+            fprintf(stderr, " (");
+            operator_t *oper = (operator_t *)node->token->obj;
+            op_type_to_str(oper->op, false);
+            fprintf(stderr, ")");
         }
     }
     fprintf(stderr, ANSI_RESET "\n");
