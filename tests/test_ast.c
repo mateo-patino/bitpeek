@@ -1,7 +1,6 @@
 #include "test_ast.h"
 #include "test_assert.h"
 #include "token.h"
-#include "lexer.h"
 #include "ast.h"
 
 #include <stdlib.h>
@@ -14,7 +13,8 @@ static const test_case_t ast_tests[] = {
     TEST(test_evaluation_medium),
     TEST(test_evaluation_hard),
     TEST(test_evaluation_harder),
-    TEST(test_evaluation_parens_madness)
+    TEST(test_evaluation_parens_madness),
+    TEST(test_ast_structure_easy)
 };
 
 
@@ -106,3 +106,30 @@ bool test_evaluation_parens_madness(void) {
 }
 
 
+bool test_ast_structure_easy(void) {
+    ASTNode *root;
+
+    root = _initialize_ast_from_expression("1 + 2 * 3");
+    ASSERT_NODE_OP(root, ADD);
+    ASSERT_NODE_NUMBER(root->left, (value_t)1);
+    ASSERT_NODE_OP(root->right, MUL);
+    ASSERT_NODE_NUMBER(root->right->left, (value_t)2);
+    ASSERT_NODE_NUMBER(root->right->right, (value_t)3);
+    /* TODO: implement full AST freer (frees token objects too) */
+
+    root = _initialize_ast_from_expression("( 1 + 2 ) * 3");
+    ASSERT_NODE_OP(root, MUL);
+    ASSERT_NODE_OP(root->left, ADD);
+    ASSERT_NODE_NUMBER(root->right, (value_t)3);
+    ASSERT_NODE_NUMBER(root->left->left, (value_t)1);
+    ASSERT_NODE_NUMBER(root->left->right, (value_t)2);
+
+    root = _initialize_ast_from_expression("1 + 2 + 3");
+    ASSERT_NODE_OP(root, ADD);
+    ASSERT_NODE_OP(root->left, ADD);
+    ASSERT_NODE_NUMBER(root->right, (value_t)3);
+    ASSERT_NODE_NUMBER(root->left->left, (value_t)1);
+    ASSERT_NODE_NUMBER(root->left->right, (value_t)2);
+
+    return true;
+}

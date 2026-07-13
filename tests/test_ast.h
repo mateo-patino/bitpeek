@@ -51,5 +51,6 @@ bool test_evaluation_parens_madness(void);
 /*
 * Test AST structure on simple expressions.
 */
+bool test_ast_structure_easy(void);
 
 #endif
