@@ -14,7 +14,8 @@ static const test_case_t ast_tests[] = {
     TEST(test_evaluation_hard),
     TEST(test_evaluation_harder),
     TEST(test_evaluation_parens_madness),
-    TEST(test_ast_structure_easy)
+    TEST(test_ast_structure_easy),
+    TEST(test_ast_structure_medium)
 };
 
 
@@ -149,4 +150,52 @@ bool test_ast_structure_easy(void) {
 }
 
 
+bool test_ast_structure_medium(void) {
+    ASTNode *root;
+
+    root = _initialize_ast_from_expression("( 01 + 0x2 ) * 3");
+    ASSERT_NODE_OP(root, MUL);
+    ASSERT_NODE_NUMBER(root->right, (value_t)3);
+    ASSERT_NODE_OP(root->left, ADD);
+    ASSERT_NODE_NUMBER(root->left->left, (value_t)1);
+    ASSERT_NODE_NUMBER(root->left->right, (value_t)2);
+
+    root = _initialize_ast_from_expression("10 / ( 07 - 0x2 ) - 2");
+    ASSERT_NODE_OP(root, SUB);
+    ASSERT_NODE_NUMBER(root->right, (value_t)2);
+    ASSERT_NODE_OP(root->left, DIV);
+    ASSERT_NODE_NUMBER(root->left->left, (value_t)10);
+    ASSERT_NODE_OP(root->left->right, SUB);
+    ASSERT_NODE_NUMBER(root->left->right->left, (value_t)7);
+    ASSERT_NODE_NUMBER(root->left->right->right, (value_t)2);    
+
+    root = _initialize_ast_from_expression("( 0b101 + 6 ) / ( 0x8 - 03 )");
+    ASSERT_NODE_OP(root, DIV);
+    ASSERT_NODE_OP(root->left, ADD);
+    ASSERT_NODE_OP(root->right, SUB);
+    ASSERT_NODE_NUMBER(root->left->left, (value_t)5);
+    ASSERT_NODE_NUMBER(root->left->right, (value_t)6);
+    ASSERT_NODE_NUMBER(root->right->left, (value_t)8);
+    ASSERT_NODE_NUMBER(root->right->right, (value_t)3);
+
+    root = _initialize_ast_from_expression("0x10 - ( 0b100 * ( 05 + 1 ) )");
+    ASSERT_NODE_OP(root, SUB);
+    ASSERT_NODE_NUMBER(root->left, (value_t)16);
+    ASSERT_NODE_OP(root->right, MUL);
+    ASSERT_NODE_NUMBER(root->right->left, (value_t)4);
+    ASSERT_NODE_OP(root->right->right, ADD);
+    ASSERT_NODE_NUMBER(root->right->right->left, (value_t)5);
+    ASSERT_NODE_NUMBER(root->right->right->right, (value_t)1);
+
+    root = _initialize_ast_from_expression("( ( 10 - 0x4 ) + 0b11 ) * 02");
+    ASSERT_NODE_OP(root, MUL);
+    ASSERT_NODE_OP(root->left, ADD);
+    ASSERT_NODE_NUMBER(root->right, (value_t)2);
+    ASSERT_NODE_OP(root->left->left, SUB);
+    ASSERT_NODE_NUMBER(root->left->right, (value_t)3);
+    ASSERT_NODE_NUMBER(root->left->left->left, (value_t)10);
+    ASSERT_NODE_NUMBER(root->left->left->right, (value_t)4);
+
+    return true;
+}
 
