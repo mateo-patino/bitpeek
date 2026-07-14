@@ -361,3 +361,15 @@ tokens_status validate_div_by_zero(const token_t *tokens, size_t token_count) {
     }
     return TOKENS_OK;
 }
+
+/*
+* TODO: more validators can be implemented to make pcalc more robust and helpful.
+*
+* Some validators that can be included: 
+*
+* check all operators have the right number of operands according to their arity;
+*
+* search for numbers with A-F letters, and if they don't have a 0x prefix, print an error msg reminding the user to use the prefix,
+*
+* Any other basic check that can be done to ensure the tokens are fine before building the AST is useful.
+*/
