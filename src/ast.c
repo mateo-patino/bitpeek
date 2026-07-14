@@ -44,6 +44,9 @@ ASTNode *create_ast_helper(const token_t *tokens, int low, int high, ast_status 
     }
     /* Multiple tokens in the range but no more operations (only parens and number remain, so extract the number) */
     else if (!has_any_operations(tokens, low, high)) {
+        /* A key invariant: no operations guarantees EXACTLY one number exists in [low, high]. If no numbers or more
+        * than one exists in [low, high], the user's expression must be structurally invalid. In that case, 
+        * find_only_number returns -1 to signal failure all the way up the recursion stack. */
         int on_index = find_only_number(tokens, low, high);
         if (on_index == -1) { 
             if (status) { *status = AST_INVALID_EXPRESSION; }
