@@ -53,6 +53,6 @@ bool test_evaluation_parens_madness(void);
 */
 bool test_ast_structure_easy(void);
 bool test_ast_structure_medium(void);
-
+bool test_ast_structure_hard(void);
 
 #endif
