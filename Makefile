@@ -11,8 +11,8 @@ endif
 CFLAGS = -std=$(CSTD) -Wall -Wextra -Werror -pedantic-errors -g
 CPPFLAGS = -Isrc
 
-APP_TARGET = pcalc
-TEST_TARGET = pcalc_tests
+APP_TARGET = bitpeek
+TEST_TARGET = bitpeek_tests
 COMPILE_DB = compile_commands.json
 
 SRC_DIR = src
