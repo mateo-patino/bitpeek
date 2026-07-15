@@ -363,7 +363,7 @@ tokens_status validate_div_by_zero(const token_t *tokens, size_t token_count) {
 }
 
 /*
-* TODO: more validators can be implemented to make pcalc more robust and helpful.
+* TODO: more validators can be implemented to make bitpeek more robust and helpful.
 *
 * Some validators that can be included: 
 *

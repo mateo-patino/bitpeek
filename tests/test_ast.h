@@ -23,7 +23,7 @@ token_t *_tokenize_from_expression(const char *expr, tokens_status *status, size
 
 /*
 * Calls tokenizer and evaluator on a mathematical expression, simulating the entire pipeline
-* of pcalc.
+* of bitpeek.
 *
 * Returns the result of evaluating the expression and -1 if an error occurs.
 */

@@ -1,5 +1,5 @@
 /*
-* Entry point for pcalc.
+* Entry point for bitpeek
 */
 #include <getopt.h>
 #include <stdio.h>
@@ -19,7 +19,7 @@
 /* 
 TODO: Usage and help function.
 */
-void pcalc_help(void) {
+void bitpeek_help(void) {
     /* TODO */
     return;
 }
@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
                 print_caps = true;
                 break;
             case 'h':
-                pcalc_help();
+                bitpeek_help();
                 return EXIT_SUCCESS;
             case '?':
                 fprintf(stderr, "Error: Unknown option '-%c' received.\n", optopt);
