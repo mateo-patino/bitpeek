@@ -3,6 +3,7 @@
 
 #include "token.h"
 #include "lexer.h"
+#include "ast.h"
 
 #include <stdbool.h>
 
@@ -27,7 +28,7 @@ token_t *_tokenize_from_expression(const char *expr, tokens_status *status, size
 *
 * Returns the result of evaluating the expression and -1 if an error occurs.
 */
-value_t _evaluate_expression(const char *expr);
+value_t _evaluate_expression(const char *expr, ast_status *status);
 
 
 /*
@@ -55,6 +56,11 @@ bool test_ast_structure_easy(void);
 bool test_ast_structure_medium(void);
 bool test_ast_structure_hard(void);
 bool test_ast_structure_harder(void);
-bool test_ast_sturcture_edge_case(void);
+bool test_ast_structure_edge_cases(void);
+
+/*
+* Test AST error catching (overflow, underflow, etc.)
+*/
+bool test_ast_division_by_zero_handling(void);
 
 #endif

@@ -17,7 +17,8 @@ static const test_case_t ast_tests[] = {
     TEST(test_ast_structure_easy),
     TEST(test_ast_structure_medium),
     TEST(test_ast_structure_hard),
-    TEST(test_ast_structure_harder)
+    TEST(test_ast_structure_harder),
+    TEST(test_ast_structure_edge_cases)
 };
 
 
@@ -94,6 +95,7 @@ bool test_evaluation_harder(void) {
 
     return true;
 }
+
 
 bool test_evaluation_parens_madness(void) {
     ASSERT_EXPR("( ( ( ( ( ( 10 ) ) ) ) ) )", (value_t)10);
@@ -354,7 +356,36 @@ bool test_ast_structure_edge_cases(void) {
     ASSERT_TRUE(root->left == NULL);
     ASSERT_TRUE(root->right == NULL);
 
+    root = _initialize_ast_from_expression("1 2");
+    ASSERT_TRUE(root == NULL);
+
+    root = _initialize_ast_from_expression("( ( ( 42 ) ) )");
+    ASSERT_NODE_NUMBER(root, (value_t)42);
+    ASSERT_TRUE(root->left == NULL);
+    ASSERT_TRUE(root->right == NULL);
+
+    root = _initialize_ast_from_expression("1 - ( 2 - 3 ) - 4");
+    ASSERT_NODE_OP(root, SUB);
+    ASSERT_NODE_OP(root->left, SUB);
+    ASSERT_NODE_NUMBER(root->right, (value_t)4);
+    ASSERT_NODE_NUMBER(root->left->left, (value_t)1);
+    ASSERT_NODE_OP(root->left->right, SUB);
+    ASSERT_NODE_NUMBER(root->left->right->left, (value_t)2);
+    ASSERT_NODE_NUMBER(root->left->right->right, (value_t)3);
+
+    root = _initialize_ast_from_expression("( 1 + 2 ) * ( 3 + 4 )");
+    ASSERT_NODE_OP(root, MUL);
+    ASSERT_NODE_OP(root->left, ADD);
+    ASSERT_NODE_OP(root->right, ADD);
+    ASSERT_NODE_NUMBER(root->left->left, (value_t)1);
+    ASSERT_NODE_NUMBER(root->left->right, (value_t)2);
+    ASSERT_NODE_NUMBER(root->right->left, (value_t)3);
+    ASSERT_NODE_NUMBER(root->right->right, (value_t)4);
+
     return true;
 }
 
 
+bool test_ast_division_by_zero_handling(void) {
+    return true;
+}
