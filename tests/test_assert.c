@@ -109,17 +109,16 @@ token_t *_tokenize_from_expression(const char *expr, tokens_status *status, size
 }
 
 
-value_t _evaluate_expression(const char *expr) { 
+value_t _evaluate_expression(const char *expr, ast_status *status) { 
     size_t token_count = 0;
     tokens_status tok_status;
     /* Note these tokens are malloc'd */
     token_t *tokens = _tokenize_from_expression(expr, &tok_status, &token_count);
     
     /* Parse the token array to build an Abstract Syntax Tree (AST) */
-    ast_status eval_status;
     AST ast;
     ast.root = create_ast_from_tokens(tokens, token_count, NULL); 
-    value_t out = evaluate_ast(&ast, &eval_status);
+    value_t out = evaluate_ast(&ast, status);
 
     free_tokens_count(tokens, token_count);
     free(tokens);

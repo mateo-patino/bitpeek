@@ -28,7 +28,7 @@ token_t *_tokenize_from_expression(const char *expr, tokens_status *status, size
 *
 * Returns the result of evaluating the expression and -1 if an error occurs.
 */
-value_t _evaluate_expression(const char *expr);
+value_t _evaluate_expression(const char *expr, ast_status *status);
 
 
 /* Structure of a test case */
@@ -124,7 +124,7 @@ void assert_eq_number_t_failed(const number_t *exp, const number_t *rec, const c
 void assert_expr_failed(const char *expr, value_t out, value_t result, const char *file_name, int line, const char *func);
 #define ASSERT_EXPR(expr, result) \
     do { \
-        value_t out = _evaluate_expression(expr); \
+        value_t out = _evaluate_expression(expr, NULL); \
         if (out != result) { \
             assert_expr_failed(expr, out, result, __FILE__, __LINE__, __func__); \
             return false; \
