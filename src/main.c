@@ -70,15 +70,15 @@ int main(int argc, char** argv) {
         switch(c) {
             case 'b':
                 group_bin_by = is_valid_grouping(optarg); 
-                accept_grouping = group_bin_by == -1 ? false : true;
+                accept_grouping = group_bin_by == -1 || !accept_grouping ? false : true;
                 break;
             case 'o':
                 group_oct_by = is_valid_grouping(optarg);
-                accept_grouping = group_oct_by == -1 ? false : true;
+                accept_grouping = group_oct_by == -1 || !accept_grouping ? false : true;
                 break;
             case 'x':
                 group_hex_by = is_valid_grouping(optarg);
-                accept_grouping = group_hex_by == -1 ? false : true;
+                accept_grouping = group_hex_by == -1 || !accept_grouping ? false : true;
                 break;
             case 'c':
                 print_caps = true;
