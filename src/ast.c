@@ -92,7 +92,7 @@ value_t evaluate_ast_helper(const ASTNode *root, ast_status *status) {
     }
 
     if (!root || !root->token) {
-        if (status) { *status = AST_INVALID_ARG; }
+        if (status) { *status = AST_INVALID_EXPRESSION; }
         return (value_t)0;
     }
 
