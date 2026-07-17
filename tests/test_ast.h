@@ -50,6 +50,15 @@ bool test_evaluation_parens_madness(void);
 
 
 /*
+* Integration test, now focused on bitwise operations.
+*/
+bool test_bitwise_evaluation_simple(void);
+bool test_bitwise_evaluation_medium(void);
+bool test_bitwise_evaluation_hard(void);
+bool test_bitwise_evaluation_harder(void);
+
+
+/*
 * Test AST structure on various expressions.
 */
 bool test_ast_structure_easy(void);
@@ -68,5 +77,6 @@ bool test_ast_structure_edge_cases(void);
 bool test_ast_division_by_zero(void);
 bool test_ast_overflow(void);
 bool test_ast_underflow(void);
+
 
 #endif

@@ -14,6 +14,10 @@ static const test_case_t ast_tests[] = {
     TEST(test_evaluation_hard),
     TEST(test_evaluation_harder),
     TEST(test_evaluation_parens_madness),
+    TEST(test_bitwise_evaluation_simple),
+    TEST(test_bitwise_evaluation_medium),
+    TEST(test_bitwise_evaluation_hard),
+    TEST(test_bitwise_evaluation_harder),
     TEST(test_ast_structure_easy),
     TEST(test_ast_structure_medium),
     TEST(test_ast_structure_hard),
@@ -110,6 +114,68 @@ bool test_evaluation_parens_madness(void) {
     ASSERT_EXPR("( ( ( ( ( ( ( ( 0x40 ) ) ) ) ) ) + ( ( ( ( ( 010 ) ) ) ) ) ) ) * ( ( ( ( ( ( 0b100 ) ) ) ) - ( ( ( ( ( 01 ) ) ) ) ) ) ) / ( ( ( ( ( 03 ) ) ) ) )", (value_t)72);
     ASSERT_EXPR("( ( ( ( ( ( 0x40 ) ) ) - ( ( ( ( ( ( 010 ) ) ) + ( ( ( 0b100 ) ) ) ) ) ) ) * ( ( ( ( ( ( 02 ) ) ) ) ) ) ) )", (value_t)104);
     
+    return true;
+}
+
+
+bool test_bitwise_evaluation_simple(void) {
+    ASSERT_EXPR("0b1100 & 0b1010", (value_t)8);
+    ASSERT_EXPR("0x0f ^ 0b1010", (value_t)5);
+    ASSERT_EXPR("07 | 0x8", (value_t)15);
+    ASSERT_EXPR("0xff and 0b1111", (value_t)15);
+    ASSERT_EXPR("0b1010 xor 0x0f", (value_t)5);
+    ASSERT_EXPR("010 or 0b0011", (value_t)11);
+    ASSERT_EXPR("1 + 2 & 7", (value_t)3);
+    ASSERT_EXPR("0x10 | 0b0011 ^ 0b0001", (value_t)18);
+
+    return true;
+}
+
+
+bool test_bitwise_evaluation_medium(void) {
+    ASSERT_EXPR("0xff & 0b10101010 | 0x0f", (value_t)175);
+    ASSERT_EXPR("0x30 ^ 0b1010 & 07", (value_t)50);
+    ASSERT_EXPR("100 + 0x0f & 0b1111", (value_t)3);
+    ASSERT_EXPR("0x20 | 3 * 4 ^ 0b0011", (value_t)47);
+    ASSERT_EXPR("( 0x3c & 0b11110000 ) - ( 07 ^ 02 )", (value_t)43);
+    ASSERT_EXPR("0x100 / 04 | 0b1010 * 02", (value_t)84);
+    ASSERT_EXPR("0b110011 + 05 ^ 0x0f & 03", (value_t)59);
+    ASSERT_EXPR("( 0x80 - 0b11 * 04 ) | ( 07 & 03 )", (value_t)119);
+    ASSERT_EXPR("0x0f ^ 010 + 02", (value_t)5);
+    ASSERT_EXPR("( ( 0x2a | 0b0101 ) & ( 0x3f ^ 07 ) )", (value_t)40);
+
+    return true;
+}
+
+
+bool test_bitwise_evaluation_hard(void) {
+    ASSERT_EXPR("( ( 0xff & ( 0b10101010 | 0x0f ) ) ^ ( 07 * 03 ) )", (value_t)186);
+    ASSERT_EXPR("( ( 0x40 + 010 ) & ( 0b111111 - 03 ) ) | ( 0x0f ^ 05 )", (value_t)10);
+    ASSERT_EXPR("( ( 0b11001100 ^ ( 0x3f + 01 ) ) & ( ( 077 - 07 ) | 0b1010 ) )", (value_t)8);
+    ASSERT_EXPR("( ( 0x100 / 04 ) | ( 0b1010 * 03 ) ) ^ ( ( 020 + 0x0f ) & 0b111111 )", (value_t)65);
+    ASSERT_EXPR("( 0xffff & ( 0x0f0f | 0b10101010 ) ) - ( ( 0100 ^ 0x3c ) & 0x0f )", (value_t)4003);
+    ASSERT_EXPR("( ( 0x80 - ( 0b11 * 010 ) ) | ( 0x20 / 02 ) ) ^ ( ( 07 + 01 ) & 0b111 )", (value_t)120);
+    ASSERT_EXPR("( ( ( 0x1234 & 0x0ff0 ) / 0x10 ) | ( 0b101101 ^ 07 ) )", (value_t)43);
+    ASSERT_EXPR("( ( 0b11110000 | ( 0x55 & 0b00111111 ) ) ^ ( ( 012 * 03 ) - 0x10 ) )", (value_t)251);
+    ASSERT_EXPR("( ( 0x7f + 01 ) ^ ( 0b10000000 - 01 ) ) | ( 0x33 & 0x0f )", (value_t)255);
+    ASSERT_EXPR("( ( 0x3c | 0b10000011 ) & ( ( 0xff - 0x0f ) ^ 0b10101010 ) ) + ( ( 07 ^ 03 ) * 02 )", (value_t)34);
+
+    return true;
+}
+
+
+bool test_bitwise_evaluation_harder(void) {
+    ASSERT_EXPR("( ( ( 0xffffffffffffffff & 0x0f0f0f0f0f0f0f0f ) ^ ( 0xaaaaaaaaaaaaaaaa | 0x1111111111111111 ) ) & 0xffff )", (value_t)46260);
+    ASSERT_EXPR("( ( ( 0x123456789abcdef0 ^ 0xfedcba9876543210 ) & 0x0f0f0f0f0f0f0f0f ) | ( ( 0777 * 02 ) & 0xff ) )", (value_t)0x0c080c000c080cfeULL);
+    ASSERT_EXPR("( ( 0b10101010 | 0b01010101 ) ^ ( ( 0xff & 0b11110000 ) | ( 0x0f & 0b00111111 ) ) )", (value_t)0);
+    ASSERT_EXPR("( ( ( 0x4000 / ( 02 + 02 ) ) | ( 0b1111 * ( 03 + 01 ) ) ) & ( ( 0xffff ^ 0x0f0f ) | 0x00ff ) )", (value_t)4156);
+    ASSERT_EXPR("( ( ( 0xaaaaaaaaaaaaaaaa xor 0x5555555555555555 ) and 0xffff0000ffff0000 ) or ( ( 0x1234 + 0x4321 ) & 0x00ff ) )", (value_t)0xffff0000ffff0055ULL);
+    ASSERT_EXPR("( ( ( 0x7fffffffffffffff & 0x00ff00ff00ff00ff ) ^ 0x0101010101010101 ) | 0x8000000000000000 ) & 0xf0f0f0f0f0f0f0f0", (value_t)0x80f000f000f000f0ULL);
+    ASSERT_EXPR("( ( 0xfffffffffffffff0 / 0x10 ) ^ ( 0x0f0f0f0f0f0f0f0f & 0x3333333333333333 ) ) | ( 0b11111111 * 0b100000001 )", (value_t)0x0cfcfcfcfcfcffffULL);
+    ASSERT_EXPR("( ( 0xdeadbeef | 0b1010101010101010 ) & ( 0xffffffff ^ 0x0f0f0f0f ) ) ^ ( ( 01234567 / 07 ) + 0x10 )", (value_t)0xd0a00fc1);
+    ASSERT_EXPR("( ( 0x3 | 0x5 | 0x9 ) ^ ( 0xf & 0x6 & 0x3 ) )", (value_t)13);
+    ASSERT_EXPR("( ( ( 0xffffffffffffffff ^ 0xaaaaaaaaaaaaaaaa ) & ( 0x5555555555555555 | 0x0000ffff0000ffff ) ) | ( ( 0x100 - 01 ) & 0xff ) ) ^ ( ( 0b1111000011110000 / 0b10 ) & 0x00ff00ff )", (value_t)0x5555555555555587ULL);
+
     return true;
 }
 
