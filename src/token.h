@@ -56,6 +56,7 @@ void print_token(const token_t *tok, bool add_newline);
 
 /* Supported operations */
 typedef enum {
+    AND,
     ADD,
     SUB,
     MUL,
