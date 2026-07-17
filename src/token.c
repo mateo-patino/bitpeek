@@ -31,6 +31,8 @@ const char op_arity[NUM_OP] = {
 /* 
 * A higher the number means the operator binds tighter than those with lower numbers. 
 * The precedence levels here are identical to those specified by the C standard whenever applicable.
+*
+* See https://en.cppreference.com/c/language/operator_precedence
 */
 const char op_precedence[NUM_OP] = {
     [OR] = 5,
