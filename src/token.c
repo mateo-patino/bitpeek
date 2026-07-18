@@ -17,6 +17,7 @@ const char* const operation_labels[NUM_OP][SYNONYMS_PER_OP] = {
     [SUB] = {"sub", "minus", "-"},
     [MUL] = {"mul", "times", "*"},
     [DIV] = {"div", "over", "/"},
+    [NOT] = {"not", "~", "bitnot"}
 };
 
 
@@ -30,6 +31,7 @@ const char op_arity[NUM_OP] = {
     [SUB] = 2,
     [MUL] = 2,
     [DIV] = 2,
+    [NOT] = 1
 };
 
 /* 
@@ -48,6 +50,7 @@ const char op_precedence[NUM_OP] = {
     [SUB] = 11,
     [MUL] = 12,
     [DIV] = 12,
+    [NOT] = 13
 };
 
 
@@ -60,7 +63,8 @@ const associativity op_associativity[NUM_OP] = {
     [ADD] = ASSOC_LEFT,
     [SUB] = ASSOC_LEFT,
     [MUL] = ASSOC_LEFT,
-    [DIV] = ASSOC_LEFT
+    [DIV] = ASSOC_LEFT,
+    [NOT] = ASSOC_RIGHT
 };
 
 

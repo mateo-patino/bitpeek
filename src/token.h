@@ -65,6 +65,7 @@ typedef enum {
     SUB,
     MUL,
     DIV,
+    NOT,
     NUM_OP
 } operation_type;
 
