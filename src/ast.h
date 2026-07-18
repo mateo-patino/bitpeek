@@ -195,4 +195,10 @@ value_t op_mul(value_t left, value_t right, ast_status *status);
 */
 value_t op_div(value_t left, value_t right, ast_status *status);
 
+
+/*
+* Returns ~'unary_operand'. No error checking required.
+*/
+value_t op_bitwise_not(value_t unary_operand, ast_status *status);
+
 #endif

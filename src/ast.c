@@ -70,34 +70,53 @@ ASTNode *create_ast_helper(const token_t *tokens, int low, int high, ast_status 
         return NULL;
     }
 
-    ASTNode *new_node;
+    ASTNode *new_node, *left, *right;
+    int lo_index = find_last_operation(tokens, low, high);
 
-    /* Only one token in the range */
-    if (low == high) {
-        new_node = init_ast_node(tokens + low, NULL, NULL);
-        goto RETURN_NEW_NODE;
-    }
-    /* Multiple tokens in the range but no more operations (only parens and number remain, so extract the number) */
-    else if (!has_any_operations(tokens, low, high)) {
-        /* A key invariant: no operations guarantees EXACTLY one number exists in [low, high]. If no numbers or more
+    /* No operation was found if lo_index == -1, so there must be EXACTLY ONE number in the subarray [low, high] */
+    if (lo_index == -1)  {
+        /*
+        * A key invariant: no operations guarantees EXACTLY one number exists in [low, high]. If no numbers or more
         * than one exists in [low, high], the user's expression must be structurally invalid. In that case, 
-        * find_only_number returns -1 to signal failure all the way up the recursion stack. */
-        int on_index = find_only_number(tokens, low, high);
-        if (on_index == -1) { 
+        * find_only_number returns -1 to signal failure all the way up the recursion stack. 
+        */
+        int on_index;
+        if ((on_index = find_only_number(tokens, low, high)) == -1) {
             if (status) { *status = AST_INVALID_EXPRESSION; }
             return NULL;
         }
-        new_node = init_ast_node(tokens + on_index, NULL, NULL);
+        left = NULL;
+        right = NULL;
+        new_node = init_ast_node(tokens+on_index, left, right);
         goto RETURN_NEW_NODE;
     }
 
-    int lo_index = find_last_operation(tokens, low, high);
-    ASTNode *left = create_ast_helper(tokens, low, lo_index - 1, status);
+    /* If last op is unary, set sentinel child according to associativity and recurse on only one half */
+    if (is_unary_operator(tokens + lo_index)) {
+
+        operator_t *oper = (operator_t *)tokens[lo_index].obj;
+
+        switch (op_associativity[oper->op]) {
+            case ASSOC_LEFT:
+                left = create_ast_helper(tokens, low, lo_index-1, status);
+                right = UNARY_OPERATOR_CHILD;
+                break;
+            case ASSOC_RIGHT:
+                left = UNARY_OPERATOR_CHILD;
+                right = create_ast_helper(tokens, lo_index+1, high, status);
+                break;
+        }
+        new_node = init_ast_node(tokens+lo_index, left, right);
+        goto RETURN_NEW_NODE;
+    }
+
+    /* If last op is not unary, it must be binary, so recurse on left and right subarrays */
+    left = create_ast_helper(tokens, low, lo_index-1, status);
     if (!left || (status && *status != AST_OK)) {
         return NULL;
     }
-    ASTNode *right = create_ast_helper(tokens, lo_index + 1, high, status);
-    if (!right || (status && *status != AST_OK)) {
+    right = create_ast_helper(tokens, lo_index+1, high, status);
+    if (!right || (status && *status != AST_OK)) { 
         return NULL;
     }
     new_node = init_ast_node(tokens+lo_index, left, right);
@@ -132,16 +151,44 @@ value_t evaluate_ast_helper(const ASTNode *root, ast_status *status) {
     }
 
     const token_t *tok = root->token;
+
+    /* If token is a number, return its value */
     if (tok->type == NUMBER) {
         number_t *num = (number_t *)tok->obj;
         return num->value; 
     }
 
-    value_t left = evaluate_ast_helper(root->left, status);
+    /* 
+    * If not a number, token must be an operator. Variables 'left' and 'right' are used to store the
+    * operands for a binary operation. 'unary_operand' is only used to store the single operand for unary
+    * operators. 
+    */
+    value_t left, right, unary_operand;
+
+    /* If token is a unary operator, recurse on one side only */
+    operator_t *oper = (operator_t *)tok->obj;
+    operation_type op = oper->op;
+    if (is_unary_operator(tok)) {
+        switch (op_associativity[op]) {
+            case ASSOC_LEFT:
+                unary_operand = evaluate_ast_helper(root->left, status);
+                break;
+            case ASSOC_RIGHT:
+                unary_operand = evaluate_ast_helper(root->right, status);
+                break;
+        }
+        if (status && *status != AST_OK) {
+            return (value_t)0;
+        }
+        goto PERFORM_OPERATION;
+    }
+
+    /* If not unary, operator must be binary, so recurse on both subtrees */
+    left = evaluate_ast_helper(root->left, status);
     if (status && *status != AST_OK) {
         return (value_t)0;
     }
-    value_t right = evaluate_ast_helper(root->right, status);
+    right = evaluate_ast_helper(root->right, status);
     if (status && *status != AST_OK) {
         return (value_t)0;
     }
@@ -151,9 +198,7 @@ value_t evaluate_ast_helper(const ASTNode *root, ast_status *status) {
         return (value_t)0;
     }
 
-    operator_t *oper = (operator_t *)tok->obj;
-    operation_type op = oper->op;
-
+PERFORM_OPERATION:
     value_t retval;
     switch (op) {
         case OR:
@@ -210,6 +255,12 @@ value_t evaluate_ast_helper(const ASTNode *root, ast_status *status) {
                 return (value_t)0;
             }
             break;
+        case NOT:
+            retval = op_bitwise_not(unary_operand, status);
+            if (status && *status != AST_OK) {
+                return (value_t)0;
+            }
+            break;
         default:
             if (status) { *status = AST_UNKNOWN_OPERATION; }
             return (value_t)0;
@@ -219,7 +270,7 @@ value_t evaluate_ast_helper(const ASTNode *root, ast_status *status) {
 
 
 int find_last_operation(const token_t *tokens, int low, int high) {
-    if (!tokens) {
+    if (!tokens || !has_any_operations(tokens, low, high)) {
         return -1;
     }
     token_type type;
@@ -394,6 +445,12 @@ value_t op_div(value_t left, value_t right, ast_status *status) {
         return (value_t)0;
     }
     return left / right;
+}
+
+
+value_t op_bitwise_not(value_t unary_operand, ast_status *status) {
+    if (status) { *status = AST_OK; } /* Bitwise NOT is always successful */
+    return ~unary_operand;
 }
 
 
