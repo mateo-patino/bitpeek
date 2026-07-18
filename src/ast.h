@@ -9,6 +9,7 @@ typedef enum {
     AST_INTEGER_OVERFLOW,
     AST_INTEGER_UNDERFLOW,
     AST_DIV_BY_ZERO,
+    AST_SHIFT_COUNT_TOO_LARGE,
     AST_INVALID_EXPRESSION, /* Structurally incorrect inputs */
     AST_EXPECTED_OPERATOR,
     AST_UNKNOWN_OPERATION,
@@ -151,6 +152,19 @@ value_t op_bitwise_xor(value_t left, value_t right, ast_status *status);
 * Returns 'left' & 'right'. There is no error check needed for bitwise AND.
 */
 value_t op_bitwise_and(value_t left, value_t right, ast_status *status);
+
+
+/*
+* Returns 'left' << 'right' if 'right' is less than 'right' is less than the
+* number of bits in value_t minus one.
+*/
+value_t op_bitwise_lshift(value_t left, value_t right, ast_status *status);
+
+/*
+* Returns 'left' >> 'right' if 'right' is less than 'right' is less than the
+* number of bits in value_t minus one.
+*/
+value_t op_bitwise_rshift(value_t left, value_t right, ast_status *status);
 
 /* 
 * Returns 'left' + 'right' if the addition does not result in overflow.

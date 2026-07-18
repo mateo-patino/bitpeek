@@ -5,7 +5,7 @@
 #include <limits.h>
 #include <stdio.h>
 #include <inttypes.h>
-
+#include <limits.h>
 
 
 ASTNode *init_ast_node(const token_t *tok, ASTNode *left, ASTNode *right) {
@@ -135,6 +135,18 @@ value_t evaluate_ast_helper(const ASTNode *root, ast_status *status) {
             break;
         case AND:
             retval = op_bitwise_and(left, right, status);
+            if (status && *status != AST_OK) {
+                return (value_t)0;
+            }
+            break;
+        case LSHIFT:
+            retval = op_bitwise_lshift(left, right, status);
+            if (status && *status != AST_OK) {
+                return (value_t)0;
+            }
+            break;
+        case RSHIFT:
+            retval = op_bitwise_rshift(left, right, status);
             if (status && *status != AST_OK) {
                 return (value_t)0;
             }
@@ -305,6 +317,23 @@ value_t op_add(value_t left, value_t right, ast_status *status) {
 }
 
 
+value_t op_bitwise_lshift(value_t left, value_t right, ast_status *status) {
+    if (right > CHAR_BIT * sizeof(value_t) - 1) {
+        if (status) { *status = AST_SHIFT_COUNT_TOO_LARGE; }
+        return (value_t)0;
+    }
+    return left << right;
+}
+
+value_t op_bitwise_rshift(value_t left, value_t right, ast_status *status) {
+    if (right > CHAR_BIT * sizeof(value_t) - 1) {
+        if (status) { *status = AST_SHIFT_COUNT_TOO_LARGE; }
+        return (value_t)0;
+    }
+    return left >> right;
+}
+
+
 value_t op_sub(value_t left, value_t right, ast_status *status) {
     if (left < right) {
         if (status) { *status = AST_INTEGER_UNDERFLOW; }
@@ -352,6 +381,11 @@ void print_ast_error(ast_status code, char *msg) {
             break;
         case AST_DIV_BY_ZERO:
             fprintf(stderr, "Error: division by zero. %s\n", msg);
+            break;
+        case AST_SHIFT_COUNT_TOO_LARGE:
+            int size = CHAR_BIT * sizeof(value_t);
+            fprintf(stderr, "Error: shift count too large. Shift counts > %i are " 
+                    "undefined for %i-bit unsigned integers.\n", size-1, size);
             break;
         case AST_INVALID_EXPRESSION:
             fprintf(stderr, "Error: invalid expression.%s\n", msg);

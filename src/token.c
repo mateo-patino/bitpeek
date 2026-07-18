@@ -12,6 +12,7 @@ const char* const operation_labels[NUM_OP][SYNONYMS_PER_OP] = {
     [XOR] = {"xor", "^", "bitxor"},
     [AND] = {"and", "&", "bitand"},
     [LSHIFT] = {"lshift", "<<", "leftshift"},
+    [RSHIFT] = {"rshift", ">>", "rightshift"},
     [ADD] = {"add", "plus", "+"},
     [SUB] = {"sub", "minus", "-"},
     [MUL] = {"mul", "times", "*"},
@@ -24,6 +25,7 @@ const char op_arity[NUM_OP] = {
     [XOR] = 2,
     [AND] = 2,
     [LSHIFT] = 2,
+    [RSHIFT] = 2,
     [ADD] = 2,
     [SUB] = 2,
     [MUL] = 2,
@@ -41,6 +43,7 @@ const char op_precedence[NUM_OP] = {
     [XOR] = 6,
     [AND] = 7,
     [LSHIFT] = 10,
+    [RSHIFT] = 10,
     [ADD] = 11,
     [SUB] = 11,
     [MUL] = 12,
@@ -53,6 +56,7 @@ const associativity op_associativity[NUM_OP] = {
     [XOR] = ASSOC_LEFT,
     [AND] = ASSOC_LEFT,
     [LSHIFT] = ASSOC_LEFT,
+    [RSHIFT] = ASSOC_LEFT,
     [ADD] = ASSOC_LEFT,
     [SUB] = ASSOC_LEFT,
     [MUL] = ASSOC_LEFT,
@@ -167,6 +171,9 @@ void print_token(const token_t *tok, bool add_newline) {
                 break;
             case LSHIFT:
                 fprintf(stdout, "LSHIFT");
+                break;
+            case RSHIFT:
+                fprintf(stdout, "RSHIFT");
                 break;
             case ADD:
                 fprintf(stdout, "ADD");

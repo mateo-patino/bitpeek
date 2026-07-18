@@ -60,6 +60,7 @@ typedef enum {
     XOR,
     AND,
     LSHIFT,
+    RSHIFT,
     ADD,
     SUB,
     MUL,
