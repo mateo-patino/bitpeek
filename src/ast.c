@@ -354,7 +354,7 @@ void free_ast(AST *ast) {
 
 
 void free_subtree(ASTNode *node) {
-    if (node == NULL) {
+    if (node == NULL || node == UNARY_OPERATOR_CHILD) {
         return;
     }
     free_subtree(node->left);
