@@ -18,6 +18,7 @@ static const test_case_t ast_tests[] = {
     TEST(test_bitwise_evaluation_medium),
     TEST(test_bitwise_evaluation_hard),
     TEST(test_bitwise_evaluation_harder),
+    TEST(test_bitwise_evaluation_unary),
     TEST(test_ast_structure_easy),
     TEST(test_ast_structure_medium),
     TEST(test_ast_structure_hard),
@@ -187,6 +188,26 @@ bool test_bitwise_evaluation_harder(void) {
     ASSERT_EXPR("( ( ( 0xffff0000ffff0000 >> ( 0b10 + 01 ) ) | ( 0x0000ffff0000ffff << 04 ) ) ^ ( ( 0xaaaaaaaaaaaaaaaa & 0x0f0f0f0f0f0f0f0f ) >> 01 ) )", (value_t)0x1afafaf51afafaf5ULL);
     ASSERT_EXPR("( ( ( 0x0123456789abcdef << 04 ) ^ ( 0xfedcba9876543210 >> 04 ) ) & ( ( 0x0f0f0f0f0f0f0f0f | 0x3333333333333333 ) << 02 ) )", (value_t)0x1cd89cd01cd89cd0ULL);
     ASSERT_EXPR("( ( 0x00ff00ff00ff00ff << 04 ) | ( 0xf000f000f000f000 >> 04 ) ) ^ ( ( 0x3333333333333333 & 0x0f0f0f0f0f0f0f0f ) << 01 )", (value_t)0x09f609f609f609f6ULL);
+
+    return true;
+}
+
+
+bool test_bitwise_evaluation_unary(void) {
+    ASSERT_EXPR("~ 0", (value_t)0xffffffffffffffffULL);
+    ASSERT_EXPR("not 0xff", (value_t)0xffffffffffffff00ULL);
+    ASSERT_EXPR("0xff & ~ 0x0f", (value_t)0xf0);
+    ASSERT_EXPR("~ ( 0x0f & 0b1010 )", (value_t)0xfffffffffffffff5ULL);
+    ASSERT_EXPR("~ 0x0f & 0b1010", (value_t)0);
+    ASSERT_EXPR("~ ~ 0x1234", (value_t)0x1234);
+    ASSERT_EXPR("not ~ bitnot 0x12345678", (value_t)0xffffffffedcba987ULL);
+    ASSERT_EXPR("~ ( ( 0x10 + 03 ) * ( 02 + 01 ) )", (value_t)0xffffffffffffffc6ULL);
+    ASSERT_EXPR("~ 0xff >> 04", (value_t)0x0ffffffffffffff0ULL);
+    ASSERT_EXPR("( ( ~ ( 0x3c ^ 0b101010 ) & ( 0xff >> 02 ) ) | ( ~ 0b11 & 0x0f ) )", (value_t)45);
+    ASSERT_EXPR("~ ( ( ~ 0xff & 0x0f ) | ( ~ ( 0b1010 << 01 ) & 0x3f ) )", (value_t)0xffffffffffffffd4ULL);
+    ASSERT_EXPR("( ( ~ 0x00ff00ff00ff00ff & 0xf0f0f0f0f0f0f0f0 ) ^ ( ~ ( 0x3333333333333333 | 0x0f0f0f0f0f0f0f0f ) & 0x0f0f0f0f0f0f0f0f ) )", (value_t)0xf000f000f000f000ULL);
+    ASSERT_EXPR("( ~ ( 0x80 >> 03 ) | ( 0b1111 & 03 ) ) ^ ( 0x55 << 01 )", (value_t)0xffffffffffffff45ULL);
+    ASSERT_EXPR("( ( ~ ( 0x400 >> 02 ) & 0xff ) + ( 0x0f ^ 03 ) )", (value_t)267);
 
     return true;
 }

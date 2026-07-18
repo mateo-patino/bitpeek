@@ -56,6 +56,7 @@ bool test_bitwise_evaluation_simple(void);
 bool test_bitwise_evaluation_medium(void);
 bool test_bitwise_evaluation_hard(void);
 bool test_bitwise_evaluation_harder(void);
+bool test_bitwise_evaluation_unary(void);
 
 
 /*
