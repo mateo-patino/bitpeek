@@ -191,6 +191,9 @@ void print_token(const token_t *tok, bool add_newline) {
             case DIV:
                 fprintf(stdout, "DIV");
                 break;
+            case NOT:
+                fprintf(stdout, "NOT");
+                break;
             case NUM_OP:
                 break;
         }
