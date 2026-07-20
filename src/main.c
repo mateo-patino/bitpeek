@@ -16,6 +16,7 @@
 #include "ast.h"
 #include "printer.h"
 
+#define LEADING_OUTPUT_SPACE "    "
 
 int is_valid_grouping(char *grp_by_str) {
     if (!grp_by_str || *grp_by_str == '\0') {
@@ -142,7 +143,6 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
-
     /* Ensure the tokens form a valid mathematical expression that can be parsed by the AST module */
     if ((tok_status = validate_tokens_semantic(tokens, token_count)) != TOKENS_OK) {
         /* TOKENS_EXPECTED_OPERAND error message is printed inside validators to inform user of which operator
@@ -177,7 +177,7 @@ int main(int argc, char** argv) {
     }
 
     /* Pretty print */
-    fprintf(stdout, "Base 2:        ");
+    fprintf(stdout, LEADING_OUTPUT_SPACE "Base 2:        ");
     if (!group_bin_by) {
         raw_print_binary(stdout, out, true);
     }
@@ -185,7 +185,7 @@ int main(int argc, char** argv) {
         pretty_print_binary(stdout, out, group_bin_by, true);
     }
 
-    fprintf(stdout, "Base 8:        ");
+    fprintf(stdout, LEADING_OUTPUT_SPACE "Base 8:        ");
     if (!group_oct_by) {
         raw_print_octal(stdout, out, true);
     }
@@ -193,10 +193,10 @@ int main(int argc, char** argv) {
         pretty_print_octal(stdout, out, group_oct_by, true);
     }
 
-    fprintf(stdout, "Base 10:       ");
+    fprintf(stdout, LEADING_OUTPUT_SPACE "Base 10:       ");
     pretty_print_decimal(stdout, out, true);
     
-    fprintf(stdout, "Base 16:       ");
+    fprintf(stdout, LEADING_OUTPUT_SPACE "Base 16:       ");
     if (!group_hex_by) {
         raw_print_hexadecimal(stdout, out, print_caps, true);
     }
