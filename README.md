@@ -1,25 +1,23 @@
 # BitPeek
 
-Online calculators are clunky to use and don't provide a useful representation of numbers in bases other than 10. I made this program to see numbers in binary, octal, and hexadecimal easily with convenient features that online calculators do not generally support.
+Online calculators are clunky and don't provide a useful representation of numbers in bases other than 10. I made this program to see numbers in binary, octal, and hexadecimal easily with convenient features that online calculators do not generally support. It is especially designed for students learning about binary, octal, and hexadecimal and people working in systems programming.
 
 ## Usage
 
-`bitpeek` is a command-line program that evaluates mathematical expressions and shows you the result in four bases simultaneously: binary, octal, decimal, and hexadecimal.
+`bitpeek` is a command-line program that evaluates mathematical expressions and shows you the result in binary, octal, decimal, and hexadecimal.
 
 ```sh
 ./bitpeek "10 + 20"
-
 Base 2:        0b11110
 Base 8:        036
 Base 10:       30
 Base 16:       0x1e
 ```
 
-Expressions may contain bitwise operations like AND, XOR, etc. These operations are identical to 
+Expressions may contain bitwise operations like AND, XOR, etc. These operations follow the precedence and associativity rules of the C programming language.
 
 ```sh
-./bitpeek "1 << 3 & "
-
+./bitpeek "1 << 3"
 Base 2:        0b1000
 Base 8:        010
 Base 10:       8
