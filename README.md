@@ -16,7 +16,7 @@ Base 10:       30
 Base 16:       0x1e
 ```
 
-Expressions may contain bitwise operations like AND, XOR, etc. These operations follow the precedence and associativity rules of the C programming language.
+Bitwise operations (AND, XOR, OR, NOT, and shifts) are supported. These operations follow the precedence and associativity rules of the C programming language.
 
 ```sh
 $ ./bitpeek "1 << 3"
@@ -31,7 +31,6 @@ Instead of evaluation a mathematical expression, you can pass a single number in
 
 ```sh
 $ ./bitpeek "0xff"
-
 Base 2:        0b11111111
 Base 8:        0377
 Base 10:       255
@@ -44,7 +43,6 @@ Base 16:       0xff
 
 ```sh
 $ ./bitpeek "0b1010 + 010 + 67 + 0xff"
-
 Base 2:        0b101110101
 Base 8:        0565
 Base 10:       373
@@ -57,7 +55,6 @@ A fundamental idea in computer science is that **four binary digits represent on
 
 ```sh
 $ ./bitpeek -b 4 "1023"
-
 Base 2:        0b 0011 1111 1111
 Base 8:        01777
 Base 10:       1,023
@@ -68,7 +65,6 @@ To group octal and hexadecimal digits, use the options `-o` and `-x`, respective
 
 ```sh
 $ ./bitpeek -b 4 -x 2 -o 3 "1024 - 1"
-
 Base 2:        0b 0011 1111 1111
 Base 8:        0 001 777
 Base 10:       1,023
