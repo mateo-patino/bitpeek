@@ -39,6 +39,9 @@ expressions=(
     "( ( ( not ( ( 0x0123456789abcdef << 04 ) ^ ( 0xfedcba9876543210 >> 04 ) ) & 0x0f0f0f0f0f0f0f0f ) | ( bitnot ( 0b1111000011110000 / 0b10 ) & 0x00ff00ff ) ) ^ ( ( 0777 * 02 ) + ( 0x3f & 0b101010 ) ) )"
 )
 
+# valgrind's exit code if a memory error is detected
+memerr_code=67
+
 # Total and pass counters
 total_tests="${#expressions[@]}"
 pass=0
@@ -47,17 +50,12 @@ pass=0
 # Takes ONE argument only: the string expression fed into bitpeek
 runMemoryCheck() {
     local expr="$1"
-    success=1
 
-    if valgrind \
-        --quiet \
-        --leak-check=full \
-        --error-exitcode=1 \
-        ./bitpeek "$expr" >/dev/null 2>&1
-    then
-        ((pass++))
-        success=0 # Global variable checked by the caller to signal success or failure of current test
-    fi
+    valgrind \
+    --quiet \
+    --leak-check=full \
+    --error-exitcode="$memerr_code" \
+    ./bitpeek "$expr" >/dev/null 2>&1
 }
 
 line="------------"
@@ -65,7 +63,7 @@ ANSI_RESET="\033[0m"
 ANSI_BOLD="\033[1m"
 ANSI_RED="\033[31m"
 ANSI_GREEN="\033[32m"
-ANSI_CYAN="\x1b[36m"
+ANSI_CYAN="\033[36m"
 
 echo ""
 printf "${ANSI_BOLD}%sMEMORY TESTS%s${ANSI_RESET}\n" "$line" "$line"
@@ -73,15 +71,27 @@ printf "${ANSI_BOLD}%sMEMORY TESTS%s${ANSI_RESET}\n" "$line" "$line"
 # Iterate through expression table
 for expr in "${expressions[@]}"; do
     runMemoryCheck "$expr"
-    if [ $success -eq 0 ]; then
-        printf "./bitpeek ${ANSI_BOLD}%s${ANSI_RESET} ${ANSI_GREEN}PASS${ANSI_RESET}\n" "$expr"
-    else 
+    status=$?
+    #
+    # The valgrind process called in runMemoryCheck will exit with code memerr_code if a memory error is detected (regardless of
+    # bitpeek's exit status, this is the default valgrind behavior). If no memory error is detected, valgrind will exit with the 
+    # status code of bitpeek, which will be 0 if bitpeek succeeded and 1 or non-zero if it failed. 
+    #
+    # This test suite considers a "failure" to be cases where valgrind finds a memory error. Executions of bitpeek
+    # that return EXIT_FAILURE are not considered a failure by this memory-checker. Hence, we check for valgrind to 
+    # return exactly memerr_code to print a failure.
+    #
+    if [ $status -eq $memerr_code ]; then
         printf "./bitpeek ${ANSI_BOLD}%s${ANSI_RESET} ${ANSI_RED}FAIL${ANSI_RESET}\n" "$expr" >&2
-
+        
         # Rerun the failing test case without --quiet flag to show the Valgrind report
         echo ""
         valgrind --leak-check=full ./bitpeek "$expr"
         echo ""
+    else 
+        (( pass++ ))
+        printf "./bitpeek ${ANSI_BOLD}%s${ANSI_RESET} ${ANSI_GREEN}PASS${ANSI_RESET}\n" "$expr"
+
     fi
 done
 
