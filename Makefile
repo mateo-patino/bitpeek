@@ -32,8 +32,10 @@ LINK = $(CC)
 all: $(COMPILE_DB) $(APP_TARGET)
 test: $(TEST_TARGET)
 	./$(TEST_TARGET)
+memcheck:
+	./memcheck.sh
 
-.PHONY: all clean test
+.PHONY: all clean memcheck test
 
 # APP
 $(APP_TARGET): $(APP_OBJS)
