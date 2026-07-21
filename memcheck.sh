@@ -35,7 +35,7 @@ runMemoryCheck() {
         --quiet \
         --leak-check=full \
         --error-exitcode=1 \
-        ./bitpeek "$expr"
+        ./bitpeek "$expr" > /dev/null 2>&1
     then
         ((pass++))
         success=0 # Global variable checked by the caller to signal success or failure of current test
