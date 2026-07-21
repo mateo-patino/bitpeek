@@ -54,7 +54,7 @@ printf "${ANSI_BOLD}%sMEMORY TESTS%s${ANSI_RESET}\n" "$line" "$line"
 
 # Iterate through expression table
 for expr in "${expressions[@]}"; do
-    runMemoryCheck "expr"
+    runMemoryCheck "$expr"
     if $success
     then
         printf "./bitpeek ${ANSI_BOLD}%s${ANSI_RESET} ${ANSI_GREEN}PASS${ANSI_RESET}\n" "$expr"
