@@ -37,6 +37,31 @@ expressions=(
     "( ( 0xaaaaaaaa and 0x0f0f0f0f ) or ( 0x55555555 bitxor 0x33333333 ) )"
     "( ( ( 0xffff0000ffff0000 rshift ( 0b10 + 01 ) ) or ( 0x0000ffff0000ffff leftshift 04 ) ) bitxor ( ( 0xaaaaaaaaaaaaaaaa bitand 0x0f0f0f0f0f0f0f0f ) rshift 01 ) )"
     "( ( ( not ( ( 0x0123456789abcdef << 04 ) ^ ( 0xfedcba9876543210 >> 04 ) ) & 0x0f0f0f0f0f0f0f0f ) | ( bitnot ( 0b1111000011110000 / 0b10 ) & 0x00ff00ff ) ) ^ ( ( 0777 * 02 ) + ( 0x3f & 0b101010 ) ) )"
+
+    # TOKENS_INVALID_ARG
+    "1 + 0b102"
+    "0x1g ^ 03"
+    "0xff $ 0b1"
+
+    # TOKENS_ULL_OVERFLOW
+    "18446744073709551616"
+    "0x10000000000000000"
+    "99999999999999999999"
+
+    # TOKENS_UNMATCHED_LPARENS
+    "( 1 + 2"
+    "( ( 0xff & 0b1010 )"
+    "~ ( ( 03 + 05 ) << 01"
+
+    # TOKENS_UNMATCHED_RPARENS
+    "1 + 2 )"
+    "( 0xff ^ 0b1010 ) )"
+    "~ 0x0f ) & 0xff"
+
+    # TOKENS_DIV_BY_ZERO
+    "1 / 0"
+    "( 0xff + 01 ) / 0x0"
+    "0b1010 ^ 03 / 00"
 )
 
 # valgrind's exit code if a memory error is detected
