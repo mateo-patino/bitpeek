@@ -61,7 +61,9 @@ for expr in "${expressions[@]}"; do
         printf "./bitpeek ${ANSI_BOLD}%s${ANSI_RESET} ${ANSI_RED}FAIL${ANSI_RESET}\n" "$expr" >&2
 
         # Rerun the failing test case without --quiet flag to show the Valgrind report
-        valgrind --leak-check=full ./bitpeek "$expr" >/dev/null 2>&1
+        echo ""
+        valgrind --leak-check=full ./bitpeek "$expr"
+        echo ""
     fi
 done
 
