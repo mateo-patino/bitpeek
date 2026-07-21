@@ -17,7 +17,7 @@ fi
 
 # Table of expressions to feed bitpeek
 expressions=(
-    "1 + 1",
+    "1 + 1"
     "1 + 0x1 + 01 + 0b1"
 )
 
@@ -38,7 +38,7 @@ runMemoryCheck() {
         ./bitpeek "$expr"
     then
         ((pass++))
-        success=0 # Global variable checked by the caller
+        success=0 # Global variable checked by the caller to signal success or failure of current test
     fi
 }
 
@@ -55,8 +55,7 @@ printf "${ANSI_BOLD}%sMEMORY TESTS%s${ANSI_RESET}\n" "$line" "$line"
 # Iterate through expression table
 for expr in "${expressions[@]}"; do
     runMemoryCheck "$expr"
-    if $success
-    then
+    if [ $success -eq 0 ]; then
         printf "./bitpeek ${ANSI_BOLD}%s${ANSI_RESET} ${ANSI_GREEN}PASS${ANSI_RESET}\n" "$expr"
     else 
         printf "./bitpeek ${ANSI_BOLD}%s${ANSI_RESET} ${ANSI_RED}FAIL${ANSI_RESET}\n" "$expr" >&2
