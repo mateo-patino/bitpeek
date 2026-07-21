@@ -2,15 +2,15 @@
 
 # This shell script tests for memory leaks in bitpeek. It must be ran in a Linux-based environment.
 if ! command -v valgrind >/dev/null 2>&1; then
-    cat << end >&2
+    cat << END >&2
 Error: valgrind was not found.
 Use a Linux-based machine or another kind of environment where valgrind is supported.
-end
+END
     exit 1
 fi
 
 # Check bitpeek executable exists
-if [ ! -f "bitpeek" ]; then
+if [ ! -x "./bitpeek" ]; then
     echo "No 'bitpeek' executable was found. Build 'bitpeek' executable before memory checking." >&2
     exit 1
 fi
@@ -35,7 +35,7 @@ runMemoryCheck() {
         --quiet \
         --leak-check=full \
         --error-exitcode=1 \
-        ./bitpeek "$expr" > /dev/null 2>&1
+        ./bitpeek "$expr" >/dev/null 2>&1
     then
         ((pass++))
         success=0 # Global variable checked by the caller to signal success or failure of current test
@@ -59,6 +59,9 @@ for expr in "${expressions[@]}"; do
         printf "./bitpeek ${ANSI_BOLD}%s${ANSI_RESET} ${ANSI_GREEN}PASS${ANSI_RESET}\n" "$expr"
     else 
         printf "./bitpeek ${ANSI_BOLD}%s${ANSI_RESET} ${ANSI_RED}FAIL${ANSI_RESET}\n" "$expr" >&2
+
+        # Rerun the failing test case without --quiet flag to show the Valgrind report
+        valgrind --leak-check=full ./bitpeek "$expr" >/dev/null 2>&1
     fi
 done
 
