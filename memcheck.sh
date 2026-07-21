@@ -68,4 +68,4 @@ printf "${ANSI_BOLD}%sSUMMARY%s${ANSI_RESET}\n" "$line" "$line"
 printf "${ANSI_BOLD}Total tests: %i${ANSI_RESET}\n" "$total_tests"
 printf "${ANSI_BOLD}Successful: %i${ANSI_RESET}\n" "$pass"
 printf "${ANSI_BOLD}Failed: %i${ANSI_RESET}\n" $(( total_tests-pass ))
-printf "${ANSI_BOLD}${ANSI_CYAN}Overall success %.0f%%${ANSI_RESET}\n" $(( pass / total_tests ))
+printf "${ANSI_BOLD}${ANSI_CYAN}Overall success %.0f%%${ANSI_RESET}\n" $(( 100*pass/total_tests ))
