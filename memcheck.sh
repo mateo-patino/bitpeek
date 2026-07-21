@@ -43,22 +43,30 @@ runMemoryCheck() {
 }
 
 line="------------"
-printf "%sMEMORY TESTS%s\n" "$line" "$line"
+ANSI_RESET="\033[0m"
+ANSI_BOLD="\033[1m"
+ANSI_RED="\033[31m"
+ANSI_GREEN="\033[32m"
+ANSI_CYAN="\x1b[36m"
+
+echo ""
+printf "${ANSI_BOLD}%sMEMORY TESTS%s${ANSI_RESET}\n" "$line" "$line"
 
 # Iterate through expression table
 for expr in "${expressions[@]}"; do
     runMemoryCheck "expr"
     if success
     then
-        printf "./bitpeek %s PASS\n" "$expr"
+        printf "./bitpeek ${ANSI_BOLD}%s${ANSI_RESET} ${ANSI_GREEN}PASS${ANSI_RESET}\n" "$expr"
     else 
-        printf "./bitpeek %s FAIL\n" "$expr" >&2
+        printf "./bitpeek ${ANSI_BOLD}%s${ANSI_RESET} ${ANSI_RED}FAIL${ANSI_RESET}\n" "$expr" >&2
     fi
 done
 
 # Overall summary
 echo ""
-printf "%sSUMMARY%s\n" "$line" "$line"
-printf "Total tests: %i\n" "$total_tests"
-printf "Successful: %i\n" "$pass"
-printf "Failed: %i\n" $(( total_tests-pass ))
+printf "${ANSI_BOLD}%sSUMMARY%s${ANSI_RESET}\n" "$line" "$line"
+printf "${ANSI_BOLD}Total tests: %i${ANSI_RESET}\n" "$total_tests"
+printf "${ANSI_BOLD}Successful: %i${ANSI_RESET}\n" "$pass"
+printf "${ANSI_BOLD}Failed: %i${ANSI_RESET}\n" $(( total_tests-pass ))
+printf "${ANSI_BOLD}${ANSI_CYAN}Overall success %.0f%%${ANSI_RESET}\n" $(( pass / total_tests ))
