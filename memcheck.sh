@@ -19,6 +19,24 @@ fi
 expressions=(
     "1 + 1"
     "1 + 0x1 + 01 + 0b1"
+    "0b1010 & 0x0f"
+    "077 | 0b10000000"
+    "~ 0x0f"
+    "0x40 >> 03"
+    "0b1011 << 02 ^ 0x0f"
+    "( 0x20 + 010 ) & ( 0b1111 * 03 )"
+    "( 0xff - 0b1010 ) ^ ( 077 / 03 )"
+    "not ( 0x0f | 0b10100000 ) & 0xff"
+    "( 0b11110000 >> ( 01 + 01 ) ) | ( 0x3 << 03 )"
+    "( ( 0x80 - 010 ) lshift 02 ) xor ( 0b110011 & 0x1f )"
+    "( ( bitnot 0b1010 & 0xff ) + ( 0x20 / 04 ) )"
+    "( ( 0x1234 ^ 0b101010101010 ) & ( 0777 | 0x0f0f ) ) >> 02"
+    "( ( 0x400 >> 02 ) - ( 0b11 << 04 ) ) | ( ( 077 ^ 0x1f ) >> 01 )"
+    "~ ( ( 0x10 + 03 ) * ( 02 + 01 ) )"
+    "( ( 0x00ff00ff << 04 ) | ( 0xf000f000 >> 04 ) ) ^ ( ( 0x33333333 & 0x0f0f0f0f ) << 01 )"
+    "( ( 0xaaaaaaaa and 0x0f0f0f0f ) or ( 0x55555555 bitxor 0x33333333 ) )"
+    "( ( ( 0xffff0000ffff0000 rshift ( 0b10 + 01 ) ) or ( 0x0000ffff0000ffff leftshift 04 ) ) bitxor ( ( 0xaaaaaaaaaaaaaaaa bitand 0x0f0f0f0f0f0f0f0f ) rshift 01 ) )"
+    "( ( ( not ( ( 0x0123456789abcdef << 04 ) ^ ( 0xfedcba9876543210 >> 04 ) ) & 0x0f0f0f0f0f0f0f0f ) | ( bitnot ( 0b1111000011110000 / 0b10 ) & 0x00ff00ff ) ) ^ ( ( 0777 * 02 ) + ( 0x3f & 0b101010 ) ) )"
 )
 
 # Total and pass counters
