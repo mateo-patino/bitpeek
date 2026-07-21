@@ -31,7 +31,7 @@ runMemoryCheck() {
     local expr="$1"
     success=1
 
-    if ./valgrind \
+    if valgrind \
         --quiet \
         --leak-check=full \
         --error-exitcode=1 \
