@@ -39,7 +39,7 @@ $ ./bitpeek "1023"
 
 ## Supported Operators
 
-`bitpeek` supports the following operators. They are listed from **highest to lowest precedence**, which is the order used to evaluate expressions. Operators with the same precedence are evaluated from left to right, except for NOT, which is evaluated from right to left. All operators have aliases that can be used interchangeably in the command-line.
+`bitpeek` supports the following operators. They are listed from **highest to lowest precedence**. Operators with the same precedence are evaluated from left to right, except for NOT, which is evaluated from right to left. All operators have **aliases that can be used interchangeably** in the command-line.
 
 | Operator | Aliases | Precedence | Associativity |
 | --- | --- | --- | --- |
@@ -52,7 +52,7 @@ $ ./bitpeek "1023"
 | Right shift | `rshift`, `>>`, `rightshift` | 10 | Left |
 | AND | `and`, `&`, `bitand` | 7 | Left |
 | XOR | `xor`, `^`, `bitxor` | 6 | Left |
-| OR | `or`, \|, `bitor` | 5 | Left |
+| OR | `or`, `\|`, `bitor` | 5 | Left |
 
 
 ## Binary, Octal, and Hex Literals
