@@ -39,7 +39,7 @@ $ ./bitpeek "1023"
 
 ## Supported Operators
 
-`bitpeek` supports the following operators. They are listed from **highest to lowest precedence**, which is the order used to evaluate expressions. Operators with the same precedence are evaluated from left to right, except for NOT, which is evaluated from right to left.
+`bitpeek` supports the following operators. They are listed from **highest to lowest precedence**, which is the order used to evaluate expressions. Operators with the same precedence are evaluated from left to right, except for NOT, which is evaluated from right to left. All operators have aliases that can be interchanged for one another in the command-line.
 
 | Operator | Aliases | Precedence | Associativity |
 | --- | --- | --- | --- |
@@ -52,7 +52,7 @@ $ ./bitpeek "1023"
 | Right shift | `rshift`, `>>`, `rightshift` | 10 | Left |
 | AND | `and`, `&`, `bitand` | 7 | Left |
 | XOR | `xor`, `^`, `bitxor` | 6 | Left |
-| OR | `or`, <code>|</code>, `bitor` | 5 | Left |
+| OR | `or`, \|, `bitor` | 5 | Left |
 
 
 ## Binary, Octal, and Hex Literals
@@ -60,11 +60,11 @@ $ ./bitpeek "1023"
 `bitpeek` can **parse expressions with numbers in any of the four supported bases**. Use the `0b` prefix to write binary numbers, a leading `0` for octal numbers, and the `0x` prefix for hexadecimal numbers. For example,
 
 ```sh
-$ ./bitpeek "0b1010 + 010 + 67 + 0xff"
-    Base 2:        0b101110101
-    Base 8:        0565
-    Base 10:       373
-    Base 16:       0x175
+$ ./bitpeek "( ( 0b1010 << 1 ) & 0xff ) + 0777" 
+    Base 2:        0b1000010011
+    Base 8:        01023
+    Base 10:       531
+    Base 16:       0x213
 ```
 
 ## Grouping
