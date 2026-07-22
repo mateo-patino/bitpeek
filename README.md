@@ -25,6 +25,24 @@ $ ./bitpeek "1 << 3"
     Base 10:       8
     Base 16:       0x8
 ```
+
+## Supported Operators
+
+`bitpeek` supports the following operators. They are listed from **highest to lowest precedence**, which is the order used to evaluate expressions. Operators with the same precedence are evaluated from left to right, except for NOT, which is evaluated from right to left.
+
+| Operator | Aliases | Precedence | Associativity |
+| --- | --- | --- | --- |
+| NOT | `not`, `~`, `bitnot` | 13 | Right |
+| Multiplication | `mul`, `times`, `*` | 12 | Left |
+| Division | `div`, `over`, `/` | 12 | Left |
+| Addition | `add`, `plus`, `+` | 11 | Left |
+| Subtraction | `sub`, `minus`, `-` | 11 | Left |
+| Left shift | `lshift`, `<<`, `leftshift` | 10 | Left |
+| Right shift | `rshift`, `>>`, `rightshift` | 10 | Left |
+| AND | `and`, `&`, `bitand` | 7 | Left |
+| XOR | `xor`, `^`, `bitxor` | 6 | Left |
+| OR | `or`, <code>|</code>, `bitor` | 5 | Left |
+
 `bitpeek` requires that **every logical token in an expression is surrounded by whitespaces** so that "2 * ( 1 + 1 )" is a valid expression but "2 * (1 + 1)" is not. In other words, all parentheses, operators, and operands must be separated by whitespaces.
 
 Instead of evaluation a mathematical expression, you can **pass a single number** into `bitpeek` to see the number represented in the different bases.
@@ -78,4 +96,3 @@ $ ./bitpeek -b 1 -o 1 -x 1 "( 1 << 10 ) - 1"
     Base 10:       1,023
     Base 16:       0x 3 f f
 ```
-
