@@ -26,6 +26,17 @@ $ ./bitpeek "1 << 3"
     Base 16:       0x8
 ```
 
+Instead evaluating a mathematical expression, you can **pass a single number** into `bitpeek` to see the number represented in the different bases.
+
+```sh
+$ ./bitpeek "1023"
+    Base 2:        0b1111111111
+    Base 8:        01777
+    Base 10:       1,023
+    Base 16:       0x3ff
+```
+`bitpeek` requires that **every logical token in an expression is surrounded by whitespaces** so that "2 * ( 1 + 1 )" is a valid expression but "2 * (1 + 1)" is not. In other words, all parentheses, operators, and operands must be separated by whitespaces.
+
 ## Supported Operators
 
 `bitpeek` supports the following operators. They are listed from **highest to lowest precedence**, which is the order used to evaluate expressions. Operators with the same precedence are evaluated from left to right, except for NOT, which is evaluated from right to left.
@@ -43,17 +54,6 @@ $ ./bitpeek "1 << 3"
 | XOR | `xor`, `^`, `bitxor` | 6 | Left |
 | OR | `or`, <code>|</code>, `bitor` | 5 | Left |
 
-`bitpeek` requires that **every logical token in an expression is surrounded by whitespaces** so that "2 * ( 1 + 1 )" is a valid expression but "2 * (1 + 1)" is not. In other words, all parentheses, operators, and operands must be separated by whitespaces.
-
-Instead of evaluation a mathematical expression, you can **pass a single number** into `bitpeek` to see the number represented in the different bases.
-
-```sh
-$ ./bitpeek "0xff"
-    Base 2:        0b11111111
-    Base 8:        0377
-    Base 10:       255
-    Base 16:       0xff
-```
 
 ## Binary, Octal, and Hex Literals
 
