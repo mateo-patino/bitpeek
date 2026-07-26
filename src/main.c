@@ -17,6 +17,8 @@
 #include "printer.h"
 
 #define LEADING_OUTPUT_SPACE "    "
+#define ANSI_BOLD "\x1b[1m"
+#define ANSI_RESET "\x1b[0m"
 
 int is_valid_grouping(char *grp_by_str) {
     if (!grp_by_str || *grp_by_str == '\0') {
@@ -37,12 +39,44 @@ int is_valid_grouping(char *grp_by_str) {
 }
 
 
-/* 
-TODO: Usage and help function.
-*/
 void bitpeek_help(void) {
-    /* TODO */
-    return;
+    fprintf(stdout,
+        ANSI_BOLD "Usage:" ANSI_RESET " bitpeek " ANSI_BOLD "[OPTIONS] EXPRESSION" ANSI_RESET "\n"
+        "\n"
+        "Evaluate an unsigned integer expression and print the result in binary,\n"
+        "octal, decimal, and hexadecimal.\n"
+        "\n"
+        ANSI_BOLD "Options:" ANSI_RESET "\n"
+        "  " ANSI_BOLD "-b N" ANSI_RESET "    Group binary digits in sets of N.\n"
+        "  " ANSI_BOLD "-o N" ANSI_RESET "    Group octal digits in sets of N.\n"
+        "  " ANSI_BOLD "-x N" ANSI_RESET "    Group hexadecimal digits in sets of N.\n"
+        "  " ANSI_BOLD "-c" ANSI_RESET "      Print hexadecimal digits in uppercase.\n"
+        "  " ANSI_BOLD "-h" ANSI_RESET "      Show this help message and exit.\n"
+        "\n"
+        ANSI_BOLD "N" ANSI_RESET " must be a non-negative integer. A grouping value of 0 disables grouping.\n"
+        "\n"
+        ANSI_BOLD "Expressions:" ANSI_RESET "\n"
+        "  " ANSI_BOLD "Surround every number, operator, and parenthesis with whitespace." ANSI_RESET "\n"
+        "  Numbers may be decimal (42), binary (0b101010), octal (052), or\n"
+        "  hexadecimal (0x2a). Quote the full expression when invoking bitpeek to\n"
+        "  avoid escaping shell characters.\n"
+        "\n"
+        ANSI_BOLD "Operators:" ANSI_RESET "\n"
+        "  " ANSI_BOLD "NOT" ANSI_RESET ":           not, ~, bitnot\n"
+        "  " ANSI_BOLD "Multiply" ANSI_RESET ":      mul, times, *\n"
+        "  " ANSI_BOLD "Divide" ANSI_RESET ":        div, over, /\n"
+        "  " ANSI_BOLD "Add" ANSI_RESET ":           add, plus, +\n"
+        "  " ANSI_BOLD "Subtract" ANSI_RESET ":      sub, minus, -\n"
+        "  " ANSI_BOLD "Left shift" ANSI_RESET ":    lshift, <<, leftshift\n"
+        "  " ANSI_BOLD "Right shift" ANSI_RESET ":   rshift, >>, rightshift\n"
+        "  " ANSI_BOLD "AND" ANSI_RESET ":           and, &, bitand\n"
+        "  " ANSI_BOLD "XOR" ANSI_RESET ":           xor, ^, bitxor\n"
+        "  " ANSI_BOLD "OR" ANSI_RESET ":            or, |, bitor\n"
+        "\n"
+        ANSI_BOLD "Examples:" ANSI_RESET "\n"
+        "  bitpeek \"10 + 20\"\n"
+        "  bitpeek -b 4 -x 2 \"( 0b1010 << 1 ) & 0xff\"\n"
+    );
 }
 
 /* 
