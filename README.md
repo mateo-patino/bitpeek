@@ -73,6 +73,8 @@ $ ./bitpeek -b 4 -x 2 -o 3 "1024 - 1"
 
 ## "Real" Examples
 
+Here are examples of problems in computer science and systems where `bitpeek` is useful.
+
 ### Convert a number to a different base
 
 ```sh
@@ -83,5 +85,64 @@ $ ./bitpeek "0xFF"
     Base 16:       0xff
 ```
 
+### Align a memory address
+
+When allocating aligned memory or working with memory-mapped hardware, it is common to round an address up to the next 16-byte boundary. Add 15 and clear the lowest four bits to do so.
+
+```sh
+$ ./bitpeek -b 4 -x 2 "( 0x1234 + 0x0f ) & ~ 0x0f"
+    Base 2:        0b 0001 0010 0100 0000
+    Base 8:        011100
+    Base 10:       4,672
+    Base 16:       0x 12 40
+```
+
+### Extract a color channel
+
+An RGB color is often stored as three bytes. The expression below shifts the green byte into place and masks out the other channels from the color `0x5a3c7f`.
+
+```sh
+$ ./bitpeek -b 8 -x 2 "( 0x5a3c7f >> 8 ) & 0xff"
+    Base 2:        0b 00111100
+    Base 8:        074
+    Base 10:       60
+    Base 16:       0x 3c
+```
+
+### Swap the byte order of a number
+
+When moving binary data between systems with different endianness, each byte in a 32-bit number may need to be moved into its opposite position. Mask each byte, then shift it by 8 or 24 bits before combining the pieces.
+
+```sh
+$ ./bitpeek -b 8 -x 2 "( ( 0x12345678 & 0x000000ff ) << 24 ) | ( ( 0x12345678 & 0x0000ff00 ) << 8 ) | ( ( 0x12345678 & 0x00ff0000 ) >> 8 ) | ( ( 0x12345678 & 0xff000000 ) >> 24 )"
+    Base 2:        0b 01111000 01010110 00110100 00010010
+    Base 8:        017025432022
+    Base 10:       2,018,915,346
+    Base 16:       0x 78 56 34 12
+```
+
+### Find a memory page offset
+
+With 4 KiB pages, the lowest 12 bits of an address identify its offset within the page. A mask of `0xfff` keeps exactly those bits.
+
+```sh
+$ ./bitpeek -b 4 -x 2 "0x7fff1234 & 0xfff"
+    Base 2:        0b 0010 0011 0100
+    Base 8:        01064
+    Base 10:       564
+    Base 16:       0x 02 34
+```
+
+### Check a Unix permission bit
+
+Unix file modes are naturally written in octal. This expression isolates the group-read bit from mode `0755`.
+
+```sh
+$ ./bitpeek -b 3 -o 3 -x 2 "0755 & 0040"
+    Base 2:        0b 100 000
+    Base 8:        0 040
+    Base 10:       32
+    Base 16:       0x 20
+```
 
 
