@@ -9,7 +9,7 @@ Clone the repository and build using `make`.
 
 ```sh
 
-git clone https://github.com/yourname/bitpeek.git
+git clone https://github.com/mateo-patino/bitpeek.git
 cd bitpeek
 make
 ````
