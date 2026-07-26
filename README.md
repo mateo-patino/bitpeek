@@ -1,45 +1,39 @@
 # BitPeek
 
-Online calculators are clunky and don't provide a useful representation of numbers in bases other than 10. I made this program to see numbers in **binary, octal, and hexadecimal** easily with convenient features that online calculators do not generally support. 
+Online calculators often don't provide a useful representation of numbers in bases other than 10. I made this program to see numbers in **binary, octal, and hexadecimal** easily with convenient features that online calculators do not generally support. 
 
 It is especially designed for students learning about number systems and people working in systems programming.
 
+## Installation
+Clone the repository and build using `make`.
+
+```sh
+
+git clone https://github.com/yourname/bitpeek.git
+cd bitpeek
+make
+````
+Optionally, add it to your local binaries directory to run it from anywhere in your system,
+```sh
+sudo cp bitpeek /usr/local/bin
+```
+
 ## Usage
 
-`bitpeek` is a command-line program that evaluates mathematical expressions and shows you the result in binary, octal, decimal, and hexadecimal.
+`bitpeek` is a command-line program that evaluates expressions containing binary, octal, decimal, and hexadecimal numbers and prints the result in four bases.
 
 ```sh
-$ ./bitpeek "10 + 20"
-    Base 2:        0b11110
-    Base 8:        036
-    Base 10:       30
-    Base 16:       0x1e
-```
-
-**Bitwise operations** (AND, XOR, OR, NOT, and shifts) are supported. These operations follow the precedence and associativity rules of the **C programming language**.
-
-```sh
-$ ./bitpeek "1 << 3"
-    Base 2:        0b1000
-    Base 8:        010
-    Base 10:       8
-    Base 16:       0x8
-```
-
-Instead evaluating a mathematical expression, you can **pass a single number** into `bitpeek` to see the number represented in the different bases.
-
-```sh
-$ ./bitpeek "1023"
-    Base 2:        0b1111111111
-    Base 8:        01777
-    Base 10:       1,023
-    Base 16:       0x3ff
-```
-`bitpeek` requires that **every logical token in an expression is surrounded by whitespaces** so that "2 * ( 1 + 1 )" is a valid expression but "2 * (1 + 1)" is not. In other words, all parentheses, operators, and operands must be separated by whitespaces.
+$ ./bitpeek "0xABC + 67 + 013 + 0b1010"
+    Base 2:        0b101100010100
+    Base 8:        05424
+    Base 10:       2,836
+    Base 16:       0xb14
+``` 
+Use the `0b` prefix for writing binary numbers, a leading `0` for octal numbers, and the `0x` prefix for hexadecimal numbers. Note that **every number, operator, and parenthesis must be surrounded by whitespaces**. In other words, "2 + ( 1 + 1 )" is a valid expression but "2+(1+1)" is not.
 
 ## Supported Operators
 
-`bitpeek` supports the following operators. They are listed from **highest to lowest precedence**. Operators with the same precedence are evaluated from left to right, **except for NOT**, which is evaluated from right to left. All operators have **aliases that can be used interchangeably** in the command-line.
+`bitpeek` supports the following arithmetic and bitwise operators, which strictly follow the precedence and associativity rules of the **C programming language**. All operators have **aliases that can be used interchangeably** in the command-line.
 
 | Operator | Aliases | Precedence | Associativity |
 | --- | --- | --- | --- |
@@ -55,21 +49,9 @@ $ ./bitpeek "1023"
 | OR | `or`, `\|`, `bitor` | 5 | Left |
 
 
-## Binary, Octal, and Hex Literals
-
-`bitpeek` can **parse expressions with numbers in any of the four supported bases**. Use the `0b` prefix to write binary numbers, a leading `0` for octal numbers, and the `0x` prefix for hexadecimal numbers. For example,
-
-```sh
-$ ./bitpeek "( ( 0b1010 << 1 ) & 0xff ) + 0777" 
-    Base 2:        0b1000010011
-    Base 8:        01023
-    Base 10:       531
-    Base 16:       0x213
-```
-
 ## Digit Grouping
 
-A fundamental idea in computer science is that **four binary digits represent one hexadecimal digit**. Hence, it is conventional to write binary numbers in **groups of four digits**. `bitpeek` lets you do this via command-line arguments. For example, to group binary digits in sets of four bits, pass `-b 4` to the program.
+A fundamental idea in computer science is that **four binary digits represent one hexadecimal digit**. Hence, it is conventional to write binary numbers in **groups of four bits**. `bitpeek` lets you do this via command-line arguments. For example, to group binary digits in sets of four bits, pass `-b 4` to the program.
 
 ```sh
 $ ./bitpeek -b 4 "1023"
@@ -79,7 +61,7 @@ $ ./bitpeek -b 4 "1023"
     Base 16:       0x3ff
 ```
 
-To group octal and hexadecimal digits, use the options `-o` and `-x`, respectively. Below we group hexadecimal by 2 digits and octal by 3 digits because these groupings map to 8 and 9 bits, respectively, and **most programmers visualize numbers this way**.
+To group octal and hexadecimal digits, use the options `-o` and `-x`, respectively. Below we group hexadecimal by 2 digits and octal by 3 digits because these groupings map to 8 and 9 bits, respectively, and most programmers visualize non-decimal numbers this way.
 
 ```sh
 $ ./bitpeek -b 4 -x 2 -o 3 "1024 - 1"
@@ -88,11 +70,18 @@ $ ./bitpeek -b 4 -x 2 -o 3 "1024 - 1"
     Base 10:       1,023
     Base 16:       0x 03 ff
 ```
-If you're like me and you struggle to count the number of digits in a long number, use a **grouping of 1 digit** to print a whitespace between every digit as so,
+
+## "Real" Examples
+
+### Convert a number to a different base
+
 ```sh
-$ ./bitpeek -b 1 -o 1 -x 1 "( 1 << 10 ) - 1"
-    Base 2:        0b 1 1 1 1 1 1 1 1 1 1
-    Base 8:        0 1 7 7 7
-    Base 10:       1,023
-    Base 16:       0x 3 f f
+$ ./bitpeek "0xFF"
+    Base 2:        0b1111 1111
+    Base 8:        0377
+    Base 10:       255
+    Base 16:       0xff
 ```
+
+
+
