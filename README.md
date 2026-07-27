@@ -1,8 +1,8 @@
 # BitPeek
 
-BitPeek is a command-line tool for inspecting integers in binary, octal, decimal, and hexadecimal. It was designed for students learning computer systems and programmers who frequently work with low-level integer representations.
+`bitpeek` is a command-line tool for inspecting integers in binary, octal, decimal, and hexadecimal. It is designed for students learning computer systems and programmers who frequently work with low-level integer representations.
 
-## Installation
+## 📦 Installation
 Clone the repository and build using `make`.
 
 ```sh
@@ -71,7 +71,7 @@ $ ./bitpeek -b 4 -x 2 -o 3 "1024 - 1"
     Base 16:       0x 03 ff
 ```
 
-## "Real" Examples
+## 💡 "Real" Examples
 
 Here are examples of problems in computer science and systems where `bitpeek` is a useful visualization tool.
 
@@ -79,7 +79,7 @@ Here are examples of problems in computer science and systems where `bitpeek` is
 
 ```sh
 $ ./bitpeek "0xFF"
-    Base 2:        0b1111 1111
+    Base 2:        0b11111111
     Base 8:        0377
     Base 10:       255
     Base 16:       0xff
