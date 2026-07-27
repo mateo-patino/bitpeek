@@ -29,25 +29,6 @@ $ ./bitpeek "0xABC + 67 + 013 + 0b1010"
 ``` 
 Use the `0b` prefix for writing binary numbers, a leading `0` for octal numbers, and the `0x` prefix for hexadecimal numbers. Note that **every number, operator, and parenthesis must be surrounded by whitespaces**. In other words, "2 + ( 1 + 1 )" is a valid expression but "2+(1+1)" is not.
 
-## 🔢 Supported Operators
-
-`bitpeek` supports the following arithmetic and bitwise operators, which strictly follow the precedence and associativity rules of the **C programming language**.
-
-| Operator | Aliases | Precedence | Associativity |
-| --- | --- | --- | --- |
-| NOT | `not`, `~`, `bitnot` | 13 | Right |
-| Multiplication | `mul`, `times`, `*` | 12 | Left |
-| Division | `div`, `over`, `/` | 12 | Left |
-| Addition | `add`, `plus`, `+` | 11 | Left |
-| Subtraction | `sub`, `minus`, `-` | 11 | Left |
-| Left shift | `lshift`, `<<`, `leftshift` | 10 | Left |
-| Right shift | `rshift`, `>>`, `rightshift` | 10 | Left |
-| AND | `and`, `&`, `bitand` | 7 | Left |
-| XOR | `xor`, `^`, `bitxor` | 6 | Left |
-| OR | `or`, `\|`, `bitor` | 5 | Left |
-
-Note that some operators are **reserved shell symbols**, e.g., `*`,`<<`, `&`, etc, so **surround expressions in quotes** or replace these symbols with aliases (listed above). 
-
 
 ## Digit Grouping
 
@@ -70,6 +51,25 @@ $ ./bitpeek -b 4 -x 2 -o 3 "1024 - 1"
     Base 10:       1,023
     Base 16:       0x 03 ff
 ```
+
+## 🔢 Supported Operators
+
+`bitpeek` supports the following arithmetic and bitwise operators, which strictly follow the precedence and associativity rules of the **C programming language**.
+
+| Operator | Aliases | Precedence | Associativity |
+| --- | --- | --- | --- |
+| NOT | `not`, `~`, `bitnot` | 13 | Right |
+| Multiplication | `mul`, `times`, `*` | 12 | Left |
+| Division | `div`, `over`, `/` | 12 | Left |
+| Addition | `add`, `plus`, `+` | 11 | Left |
+| Subtraction | `sub`, `minus`, `-` | 11 | Left |
+| Left shift | `lshift`, `<<`, `leftshift` | 10 | Left |
+| Right shift | `rshift`, `>>`, `rightshift` | 10 | Left |
+| AND | `and`, `&`, `bitand` | 7 | Left |
+| XOR | `xor`, `^`, `bitxor` | 6 | Left |
+| OR | `or`, `\|`, `bitor` | 5 | Left |
+
+Note that some operators are **reserved shell symbols**, e.g., `*`,`<<`, `&`, etc, so **surround expressions in quotes** or replace these symbols with aliases (listed above). 
 
 ## 💡 "Real" Examples
 
