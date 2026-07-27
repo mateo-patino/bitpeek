@@ -1,8 +1,6 @@
 # BitPeek
 
-Online calculators often don't provide a useful representation of numbers in bases other than 10. I made this program to see numbers in **binary, octal, and hexadecimal** easily with convenient features that online calculators do not generally support. 
-
-It is especially designed for students learning about number systems and people working in systems programming.
+BitPeek is a command-line tool for inspecting integers in binary, octal, decimal, and hexadecimal. It was designed for students learning computer systems and programmers who frequently work with low-level integer representations.
 
 ## Installation
 Clone the repository and build using `make`.
@@ -15,7 +13,7 @@ make
 ````
 Optionally, add it to your local binaries directory to run it from anywhere in your system,
 ```sh
-sudo cp bitpeek /usr/local/bin
+sudo cp bitpeek /usr/local/bin/
 ```
 
 ## Usage
@@ -33,7 +31,7 @@ Use the `0b` prefix for writing binary numbers, a leading `0` for octal numbers,
 
 ## Supported Operators
 
-`bitpeek` supports the following arithmetic and bitwise operators, which strictly follow the precedence and associativity rules of the **C programming language**. All operators have **aliases that can be used interchangeably** in the command-line.
+`bitpeek` supports the following arithmetic and bitwise operators, which strictly follow the precedence and associativity rules of the **C programming language**.
 
 | Operator | Aliases | Precedence | Associativity |
 | --- | --- | --- | --- |
@@ -47,6 +45,8 @@ Use the `0b` prefix for writing binary numbers, a leading `0` for octal numbers,
 | AND | `and`, `&`, `bitand` | 7 | Left |
 | XOR | `xor`, `^`, `bitxor` | 6 | Left |
 | OR | `or`, `\|`, `bitor` | 5 | Left |
+
+Note that some operators are **reserved shell symbols**, e.g., `*`,`<<`, `&`, etc, so **surround expressions in quotes** or replace these symbols with aliases (listed above). 
 
 
 ## Digit Grouping
@@ -73,7 +73,7 @@ $ ./bitpeek -b 4 -x 2 -o 3 "1024 - 1"
 
 ## "Real" Examples
 
-Here are examples of problems in computer science and systems where `bitpeek` is useful.
+Here are examples of problems in computer science and systems where `bitpeek` is a useful visualization tool.
 
 ### Convert a number to a different base
 
@@ -114,7 +114,7 @@ $ ./bitpeek -b 8 -x 2 "( 0x5a3c7f >> 8 ) & 0xff"
 When moving binary data between systems with different endianness, each byte in a 32-bit number may need to be moved into its opposite position. Mask each byte, then shift it by 8 or 24 bits before combining the pieces.
 
 ```sh
-$ ./bitpeek -b 8 -x 2 "( ( 0x12345678 & 0x000000ff ) << 24 ) | ( ( 0x12345678 & 0x0000ff00 ) << 8 ) | ( ( 0x12345678 & 0x00ff0000 ) >> 8 ) | ( ( 0x12345678 & 0xff000000 ) >> 24 )"
+$ ./bitpeek -b 8 -x 2 "( ( 0x12345678 & 0xff ) << 24 ) | ( ( 0x12345678 & 0xff00 ) << 8 ) | ( ( 0x12345678 & 0xff0000 ) >> 8 ) | ( ( 0x12345678 & 0xff000000 ) >> 24 )"
     Base 2:        0b 01111000 01010110 00110100 00010010
     Base 8:        017025432022
     Base 10:       2,018,915,346
