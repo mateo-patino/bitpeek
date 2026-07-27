@@ -1,4 +1,4 @@
-# BitPeek
+# bitpeek
 
 `bitpeek` is a command-line tool for inspecting integers in binary, octal, decimal, and hexadecimal. It is designed for students learning computer systems and programmers who frequently work with low-level integer representations.
 
@@ -29,7 +29,7 @@ $ ./bitpeek "0xABC + 67 + 013 + 0b1010"
 ``` 
 Use the `0b` prefix for writing binary numbers, a leading `0` for octal numbers, and the `0x` prefix for hexadecimal numbers. Note that **every number, operator, and parenthesis must be surrounded by whitespaces**. In other words, "2 + ( 1 + 1 )" is a valid expression but "2+(1+1)" is not.
 
-## Supported Operators
+## 🔢 Supported Operators
 
 `bitpeek` supports the following arithmetic and bitwise operators, which strictly follow the precedence and associativity rules of the **C programming language**.
 
@@ -145,4 +145,6 @@ $ ./bitpeek -b 3 -o 3 -x 2 "0755 & 0040"
     Base 16:       0x 20
 ```
 
+## 📄 License
 
+This project is licensed under the MIT License. See the `LICENSE` file for details.
