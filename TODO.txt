@@ -1,0 +1,11 @@
+Here's a list of features that will likely improve `bitpeek` that have not been
+implemented yet:
+
+1. Shell-friendly option: Add an option (e.g. -s for Shell) that prints output
+in a format that can be easily consumed by shell scripts. A one-line, space-
+separated format could work; other shell-friendly formats exist.
+
+2. Arbitrary base option: Add an option (e.g. -n) that prints output in an 
+arbitrary base requested by the user. `bitpeek` uses the strtoul interface,
+which can only handle bases between 0 and 36, so a `bitpeek`-specific base
+converter will need to be implemented.
