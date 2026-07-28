@@ -109,9 +109,20 @@ expressions=(
 # valgrind's exit code if a memory error is detected
 memerr_code=67
 
+# Fuzz-test configuration
+fuzz_test_count=50
+fuzz_expr_length=64
+
 # Total and pass counters
-total_tests="${#expressions[@]}"
+total_tests=$(( ${#expressions[@]} + fuzz_test_count ))
 pass=0
+fuzz_pass=0
+
+# Generate a random printable expression. NUL bytes cannot be stored in argv,
+# while printable bytes exercise the lexer without introducing terminal control codes.
+generateFuzzExpression() {
+    LC_ALL=C tr -dc '[:print:]' < /dev/urandom | head -c "$fuzz_expr_length"
+}
 
 # Calls valgrind on a single expression and increments the mem_pass counter accordingly.
 # Takes ONE argument only: the string expression fed into bitpeek
@@ -122,7 +133,7 @@ runMemoryCheck() {
     --quiet \
     --leak-check=full \
     --error-exitcode="$memerr_code" \
-    ./bitpeek "$expr" >/dev/null 2>&1
+    ./bitpeek -- "$expr" >/dev/null 2>&1
 }
 
 line="------------"
@@ -153,7 +164,7 @@ for expr in "${expressions[@]}"; do
         
         # Rerun the failing test case without --quiet flag to show the Valgrind report
         echo ""
-        valgrind --leak-check=full ./bitpeek "$expr"
+        valgrind --leak-check=full ./bitpeek -- "$expr"
         echo ""
     else 
         (( pass++ ))
@@ -162,9 +173,32 @@ for expr in "${expressions[@]}"; do
     fi
 done
 
+echo ""
+printf "${ANSI_BOLD}%sFUZZ TESTS%s${ANSI_RESET}\n" "$line" "$line"
+
+for ((i = 1; i <= fuzz_test_count; i++)); do
+    expr="$(generateFuzzExpression)"
+    runMemoryCheck "$expr"
+    status=$?
+
+    if [ $status -eq $memerr_code ]; then
+        printf "Fuzz test %i: ${ANSI_BOLD}%s${ANSI_RESET} ${ANSI_RED}FAIL${ANSI_RESET}\n" "$i" "$expr" >&2
+
+        # Rerun the failing fuzz case without --quiet flag to show the Valgrind report
+        echo ""
+        valgrind --leak-check=full ./bitpeek -- "$expr"
+        echo ""
+    else
+        (( pass++ ))
+        (( fuzz_pass++ ))
+        printf "Fuzz test %i: ${ANSI_BOLD}%s${ANSI_RESET} ${ANSI_GREEN}PASS${ANSI_RESET}\n" "$i" "$expr"
+    fi
+done
+
 # Overall summary
 echo ""
 printf "${ANSI_BOLD}%sSUMMARY%s${ANSI_RESET}\n" "$line" "$line"
+printf "${ANSI_BOLD}Fuzz tests: %i/%i passed${ANSI_RESET}\n" "$fuzz_pass" "$fuzz_test_count"
 printf "${ANSI_BOLD}Total tests: %i${ANSI_RESET}\n" "$total_tests"
 printf "${ANSI_BOLD}Successful: %i${ANSI_RESET}\n" "$pass"
 printf "${ANSI_BOLD}Failed: %i${ANSI_RESET}\n" $(( total_tests-pass ))
