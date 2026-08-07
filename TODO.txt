@@ -9,3 +9,9 @@ separated format could work; other shell-friendly formats exist.
 arbitrary base requested by the user. `bitpeek` uses the strtoul interface,
 which can only handle bases between 0 and 36, so a `bitpeek`-specific base
 converter will need to be implemented.
+
+3. Endianness: Add some way to visualize an integer written in little- and
+big-endian. It should easy to see how the byte order is reversed. The 
+different byte orderings can likely be printed in any base using the mappings
+8 bits = 6 octal digits = 2 hex digits = 1 byte, though this would likely require
+overwriting any grouping options the user passed.
